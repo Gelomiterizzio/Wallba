@@ -1,0 +1,12 @@
+{
+  "request_id": "44444444-4444-4444-8444-444444444444",
+  "agent_id": "demo-agent",
+  "tool": "email.send",
+  "operation": "send",
+  "resource_id": "mailbox:demo-outbox",
+  "parameters": {
+    "to": "reviewer@example.test",
+    "subject": "Resumen ficticio",
+    "body": "Contenido sintetico de demostracion."
+  }
+}

@@ -2,7 +2,7 @@
   "request_id": "44444444-4444-4444-8444-444444444444",
   "decision": "REQUIRE_APPROVAL",
   "reason_code": "APPROVAL_REQUIRED",
-  "matched_rule_ids": ["send_email_external_requires_approval"],
+  "matched_rule_ids": ["approve-email-example"],
   "policy_id": "demo-policy",
   "policy_version": 1,
   "risk": "HIGH"
