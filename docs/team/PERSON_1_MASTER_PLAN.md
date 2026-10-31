@@ -280,7 +280,7 @@ La dependencia técnica entre módulos se resuelve con fixtures/puertos temprano
 ### WAL-P1-001 — Contratos compartidos y fixtures iniciales
 
 - Historia: Como integrante necesito contratos antes de depender de otro módulo.
-- Prioridad: Crítica; esfuerzo: **2 puntos**; estado: Pendiente.
+- Prioridad: Crítica; esfuerzo: **2 puntos**; estado: Implementada; pendiente revisión de consumidores P2/P3/P4.
 - Dependencias: ninguna; contrato de planificación aprobado.
 - Delegación: p1-system-architect; revisión final del humano.
 - Archivos: `backend/wallba/contracts/`, `contracts/openapi.json`, `contracts/examples/`, `frontend/src/api/generated.ts`.
@@ -299,7 +299,7 @@ Evidencia requerida: diff, comando/fecha/entorno, resultado observado y artifact
 ### WAL-P1-002 — Scaffold reproducible y configuración segura
 
 - Historia: Como equipo necesito instalar y arrancar desde una base reproducible.
-- Prioridad: Alta; esfuerzo: **2 puntos**; estado: Pendiente.
+- Prioridad: Alta; esfuerzo: **2 puntos**; estado: Implementada; npm build pendiente del frontend P4.
 - Dependencias: WAL-P1-001.
 - Delegación: p1-system-architect; revisión final del humano.
 - Archivos propios: `backend/wallba/foundation/app.py`, `backend/wallba/foundation/config.py`, `backend/pyproject.toml`, `backend/uv.lock`, `.env.example`. P4 crea `frontend/package.json` y su lock; P1 solicita y revisa compatibilidad, sin editarlos simultáneamente.
@@ -318,7 +318,7 @@ Evidencia requerida: diff, comando/fecha/entorno, resultado observado y artifact
 ### WAL-P1-003 — Persistencia base y migraciones coordinadas
 
 - Historia: Como desarrollador necesito almacenamiento con invariantes y evolución explícitas.
-- Prioridad: Alta; esfuerzo: **2 puntos**; estado: Pendiente.
+- Prioridad: Alta; esfuerzo: **2 puntos**; estado: Implementada.
 - Dependencias: WAL-P1-002.
 - Delegación: p1-system-architect; revisión final del humano.
 - Archivos: `backend/wallba/foundation/database.py`, `backend/alembic/`, `tests/foundation/test_migrations.py`.
@@ -337,7 +337,7 @@ Evidencia requerida: diff, comando/fecha/entorno, resultado observado y artifact
 ### WAL-P1-004 — Cuatro herramientas con efectos sintéticos
 
 - Historia: Como demostrador necesito efectos verificables sin recursos reales.
-- Prioridad: Crítica; esfuerzo: **3 puntos**; estado: Pendiente.
+- Prioridad: Crítica; esfuerzo: **3 puntos**; estado: Implementada; prueba de symlink pendiente en Linux.
 - Dependencias: WAL-P1-001, WAL-P1-003.
 - Delegación: p1-ai-agent-engineer; revisión final del humano.
 - Archivos: `backend/wallba/executor/tools/`, `tests/executor/test_tools.py`.
@@ -356,7 +356,7 @@ Evidencia requerida: diff, comando/fecha/entorno, resultado observado y artifact
 ### WAL-P1-005 — Agente guionado y APIs de catálogo
 
 - Historia: Como usuario necesito un agente demostrativo que genere solicitudes trazables.
-- Prioridad: Alta; esfuerzo: **2 puntos**; estado: Pendiente.
+- Prioridad: Alta; esfuerzo: **2 puntos**; estado: Implementada.
 - Dependencias: WAL-P1-001, WAL-P1-002.
 - Delegación: p1-ai-agent-engineer; revisión final del humano.
 - Archivos: `backend/wallba/agent/`, `tests/agent/`.
@@ -375,7 +375,7 @@ Evidencia requerida: diff, comando/fecha/entorno, resultado observado y artifact
 ### WAL-P1-006 — Servicio ejecutor con capacidades y journal
 
 - Historia: Como proxy necesito un ejecutor que rechace acceso directo y replay.
-- Prioridad: Crítica; esfuerzo: **3 puntos**; estado: Pendiente.
+- Prioridad: Crítica; esfuerzo: **3 puntos**; estado: Implementada; pendiente confirmar firma con P3.
 - Dependencias: WAL-P1-003, WAL-P1-004.
 - Delegación: p1-ai-agent-engineer; revisión final del humano.
 - Archivos: `backend/wallba/executor/service.py`, `backend/wallba/executor/capabilities.py`, `backend/wallba/executor/journal.py`, `tests/executor/test_capabilities.py`, `tests/executor/test_recovery.py`.
@@ -394,7 +394,7 @@ Evidencia requerida: diff, comando/fecha/entorno, resultado observado y artifact
 ### WAL-P1-007 — Fixtures duales y catálogo de diez escenarios
 
 - Historia: Como equipo necesito comparar condiciones iniciales equivalentes.
-- Prioridad: Alta; esfuerzo: **2 puntos**; estado: Pendiente.
+- Prioridad: Alta; esfuerzo: **2 puntos**; estado: Implementada; S07/S09/S10 requieren harness P2/P3.
 - Dependencias: WAL-P1-004, WAL-P1-005.
 - Delegación: p1-ai-agent-engineer; revisión final del humano.
 - Archivos: `backend/wallba/demo/fixtures.py`, `backend/wallba/demo/scenarios.py`, `tests/demo/test_fixtures.py`.
@@ -413,7 +413,7 @@ Evidencia requerida: diff, comando/fecha/entorno, resultado observado y artifact
 ### WAL-P1-008 — Runner paired, matriz y evidencia
 
 - Historia: Como presentador necesito observar la misma intención con y sin firewall.
-- Prioridad: Crítica; esfuerzo: **4 puntos**; estado: Pendiente.
+- Prioridad: Crítica; esfuerzo: **4 puntos**; estado: Parcial: probada con FakeGateway; falta gateway real P3.
 - Dependencias: WAL-P1-005, WAL-P1-006, WAL-P1-007.
 - Delegación: p1-ai-agent-engineer; revisión final del humano.
 - Archivos: `backend/wallba/demo/runner.py`, `backend/wallba/demo/evidence.py`, `backend/wallba/demo/routes.py`, `tests/demo/test_runner.py`, `tests/demo/test_evidence.py`.
@@ -433,7 +433,7 @@ Evidencia requerida: diff, comando/fecha/entorno, resultado observado y artifact
 ### WAL-P1-009 — Aislamiento Compose y coordinación CI
 
 - Historia: Como equipo necesito levantar el sistema y validar cambios de forma consistente.
-- Prioridad: Crítica; esfuerzo: **3 puntos**; estado: Pendiente.
+- Prioridad: Crítica; esfuerzo: **3 puntos**; estado: Implementada; imagen web pendiente del frontend P4 y CI sin ejecutar en GitHub.
 - Dependencias: WAL-P1-002, WAL-P1-003, WAL-P1-006.
 - Delegación: p1-system-architect; revisión final del humano.
 - Archivos: `infra/compose.yaml`, `infra/Dockerfile.api`, `infra/Dockerfile.executor`, `infra/Dockerfile.agent`, `infra/Dockerfile.web`, `.github/workflows/ci.yml`, `tests/infra/`.
@@ -452,7 +452,7 @@ Evidencia requerida: diff, comando/fecha/entorno, resultado observado y artifact
 ### WAL-P1-010 — Integración final y recuperación demostrable
 
 - Historia: Como equipo necesito una demo recuperable con limitaciones explícitas.
-- Prioridad: Alta; esfuerzo: **2 puntos**; estado: Pendiente.
+- Prioridad: Alta; esfuerzo: **2 puntos**; estado: Parcial: recuperación lista; falta integrar P2/P3/P4.
 - Dependencias: WAL-P1-008, WAL-P1-009.
 - Delegación: Humano + wallba-verifier; revisión final del humano.
 - Archivos: `tests/integration/test_foundation_demo.py`, `tests/foundation/test_restore.py`, `backend/wallba/demo/README.md`.
@@ -773,17 +773,17 @@ No recortar aislamiento, auditoría o evidencia para mantener una cifra artifici
 
 ## 20. Checklist de seguimiento
 
-- [ ] Aprobación humana del plan antes de producción.
-- [ ] Estado remoto verificado sin asumir repositorio vacío.
+- [x] Aprobación humana del plan antes de producción.
+- [x] Estado remoto verificado sin asumir repositorio vacío.
 - [ ] WAL-P1-001: DTO, puertos y fixtures revisados.
-- [ ] WAL-P1-002: scaffold, config y locks reproducibles.
-- [ ] WAL-P1-003: DB base, migraciones y copia de recuperación.
-- [ ] WAL-P1-004: cuatro herramientas sintéticas con resultados tipados.
-- [ ] WAL-P1-005: agente guionado y APIs de catálogo.
-- [ ] WAL-P1-006: capacidad, journal, replay y recuperación.
-- [ ] WAL-P1-007: fixtures duales y diez escenarios.
+- [x] WAL-P1-002: scaffold, config y locks reproducibles.
+- [x] WAL-P1-003: DB base, migraciones y copia de recuperación.
+- [x] WAL-P1-004: cuatro herramientas sintéticas con resultados tipados.
+- [x] WAL-P1-005: agente guionado y APIs de catálogo.
+- [x] WAL-P1-006: capacidad, journal, replay y recuperación.
+- [x] WAL-P1-007: fixtures duales y diez escenarios.
 - [ ] WAL-P1-008: runner/evidence/matrix observados.
-- [ ] WAL-P1-009: redes, mounts, secretos y CI.
+- [x] WAL-P1-009: redes, mounts, secretos y CI.
 - [ ] WAL-P1-010: integración y procedimiento recuperable.
 - [ ] Sin mocks activos en demostración final.
 - [ ] Todos los resultados afirmados tienen evidencia real.

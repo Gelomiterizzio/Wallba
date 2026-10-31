@@ -19,7 +19,7 @@ def cell(value):
 def main():
     tasks = load_tasks()
     lines = ['# Matriz maestra de tareas', '',
-             'Fuente: `docs/planning/person-*-tasks.json`. Todas pendientes de implementación. Cada estimación incluye investigación, implementación, pruebas, integración y documentación. Detalle paso a paso en el manual del dueño.', '',
+             'Fuente: `docs/planning/person-*-tasks.json`. El estado de cada tarea figura en su fila. Cada estimación incluye investigación, implementación, pruebas, integración y documentación. Detalle paso a paso en el manual del dueño.', '',
              '| ID | Responsable | Módulo / historia | Tarea / subtareas | Prioridad | Unidades | Dependencias de construcción | Archivos | Subagente | Aceptación / validación | Estado |',
              '|---|---|---|---|---|---:|---|---|---|---|---|']
     for t in tasks:
