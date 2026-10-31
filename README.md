@@ -1,6 +1,6 @@
 # WALLBA — AI Agent Permission Firewall
 
-Paquete de planificación para que **cuatro desarrolladores humanos** construyan un MVP seguro y demostrable. Estado: **plan completo para revisión; aplicación aún no implementada**. Publicación documental solicitada por el usuario; no implica aprobación de implementación.
+Paquete de planificación para que **cuatro desarrolladores humanos** construyan un MVP seguro y demostrable. Estado: **implementación en curso**. El módulo de Persona 1 está implementado y pendiente de revisión; faltan los módulos de P2, P3 y P4, por lo que aún no hay evidencia de protección de punta a punta. Puesta en marcha: [laboratorio de demostración](backend/wallba/demo/README.md).
 
 Empezar por [informe final](docs/FINAL_REPORT.md), [plan maestro](docs/MASTER_PLAN.md) y [auditoría documental](docs/PLAN_AUDIT.md). La aprobación humana del plan precede cualquier implementación funcional.
 

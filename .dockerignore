@@ -1,0 +1,13 @@
+# Allowlist: el contexto de build solo incluye lo que las imágenes copian.
+# Secretos, .git, datos locales y documentación nunca salen de esta carpeta.
+*
+!backend/pyproject.toml
+!backend/uv.lock
+!backend/alembic/
+!backend/wallba/
+!frontend/
+!infra/nginx.conf
+**/__pycache__/
+**/*.py[cod]
+frontend/node_modules/
+frontend/dist/

@@ -1,0 +1,39 @@
+{
+  "canonical_bytes": "{\"call\":{\"agent_id\":\"demo-agent\",\"operation\":\"send\",\"parameters\":{\"body\":\"Contenido sintético.\",\"subject\":\"Revisión ñandú\",\"to\":\"reviewer@example.test\"},\"request_id\":\"22222222-2222-4222-8222-222222222222\",\"resource_id\":\"mailbox:demo-outbox\",\"tool\":\"email.send\"},\"environment_id\":\"protected-fixture\",\"principal_id\":\"demo-operator\",\"resource_version\":1}",
+  "canonical_request": {
+    "call": {
+      "agent_id": "demo-agent",
+      "operation": "send",
+      "parameters": {
+        "body": "Contenido sintético.",
+        "subject": "Revisión ñandú",
+        "to": "reviewer@example.test"
+      },
+      "request_id": "22222222-2222-4222-8222-222222222222",
+      "resource_id": "mailbox:demo-outbox",
+      "tool": "email.send"
+    },
+    "environment_id": "protected-fixture",
+    "principal_id": "demo-operator",
+    "resource_version": 1
+  },
+  "capability": {
+    "audience": "wallba-executor",
+    "environment_id": "protected-fixture",
+    "execution_id": "33333333-3333-4333-8333-333333333333",
+    "expires_at": "2026-10-31T12:00:30Z",
+    "key_id": "test-key",
+    "nonce": "0123456789abcdef0123456789abcdef",
+    "policy_id": "demo-policy",
+    "policy_version": 1,
+    "principal_id": "demo-operator",
+    "request_digest": "ad5966a321320883e7f1e42b65a3297e3a17db4e43dc042bfaed93f48233d19e",
+    "resource_version": 1,
+    "signature": "b6fd8ce5e1b655309690586db62cfe62c85ad9eaa7c852d3185cd00a5476947b",
+    "version": 1
+  },
+  "capability_signing_bytes": "{\"audience\":\"wallba-executor\",\"environment_id\":\"protected-fixture\",\"execution_id\":\"33333333-3333-4333-8333-333333333333\",\"expires_at\":\"2026-10-31T12:00:30Z\",\"key_id\":\"test-key\",\"nonce\":\"0123456789abcdef0123456789abcdef\",\"policy_id\":\"demo-policy\",\"policy_version\":1,\"principal_id\":\"demo-operator\",\"request_digest\":\"ad5966a321320883e7f1e42b65a3297e3a17db4e43dc042bfaed93f48233d19e\",\"resource_version\":1,\"version\":1}",
+  "note": "Vectores para verificar canonicalización y HMAC entre P1 y P3. Secreto solo de prueba.",
+  "request_digest": "ad5966a321320883e7f1e42b65a3297e3a17db4e43dc042bfaed93f48233d19e",
+  "test_secret": "test-only-capability-secret-not-for-production"
+}

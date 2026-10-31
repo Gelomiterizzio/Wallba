@@ -32,6 +32,8 @@ Cuatro responsables humanos. La propiedad es principal y exige revisión; no imp
 | .cursor/agents/pN-*.md | PN | Dueño del área y revisor de seguridad |
 | .cursor/agents/wallba-verifier.md y .cursor/rules/*, docs/CURSOR_WORKFLOW.md | P1 | Los cuatro |
 | scripts/validate_plan.py, scripts/build_plan_tables.py | P1 | P2 comprobación del verificador |
+| scripts/export_contracts.py, scripts/generate_dev_secrets.py, pytest.ini | P1 | P3 límites de confianza |
+| tests/conftest.py, tests/support/ (dobles de desarrollo), tests/integration/test_foundation_demo.py | P1 | P2/P3/P4 consumidores |
 
 Todo archivo nuevo debe elegir uno de estos scopes o añadirse a esta tabla antes del PR. `AGENTS.md` no es un mecanismo técnico de sandbox. Contratos y locks no se editan simultáneamente sin coordinación. P4 hace routing de las pantallas P2/P3 mediante interfaces exportadas, sin editar lógica interna ajena.
 

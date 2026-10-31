@@ -1,0 +1,9 @@
+{
+  "request_id": "22222222-2222-4222-8222-222222222222",
+  "decision": "DENY",
+  "reason_code": "RULE_DENY",
+  "matched_rule_ids": ["deny-record-delete"],
+  "policy_id": "demo-policy",
+  "policy_version": 1,
+  "risk": "HIGH"
+}

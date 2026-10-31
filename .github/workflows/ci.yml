@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - run: python3 scripts/validate_plan.py
+
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+        with:
+          version: "0.13.6"
+      - name: Instalar desde el lock
+        run: uv sync --project backend --frozen --python 3.12
+      - name: Pruebas por dueño (cada suite conserva su propio directorio)
+        run: uv run --project backend --frozen pytest tests -q
+      - name: Contrato OpenAPI sin diferencias
+        run: |
+          uv run --project backend --frozen python scripts/export_contracts.py
+          git diff --exit-code -- contracts/
+      - name: Auditoría de dependencias
+        run: |
+          uv export --project backend --frozen --no-dev --no-emit-project -o /tmp/requirements.txt
+          uvx --from pip-audit==2.9.0 pip-audit -r /tmp/requirements.txt
+
+  infra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Secretos efímeros de CI
+        run: python3 scripts/generate_dev_secrets.py
+      - name: Validar Compose
+        run: docker compose -f infra/compose.yaml --profile demo --profile web config --quiet
+      - name: Construir imágenes aisladas
+        run: docker compose -f infra/compose.yaml --profile demo build api executor baseline agent
+      - uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
+        with:
+          version: "0.13.6"
+      - name: Aislamiento sobre la red real
+        run: |
+          uv sync --project backend --frozen --python 3.12
+          uv run --project backend --frozen pytest tests/infra/test_live_isolation.py -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      # El paquete lo crea P4; hasta entonces estos pasos se omiten y no cuentan como superados.
+      - name: Avisar si falta el paquete del frontend
+        if: ${{ hashFiles('frontend/package-lock.json') == '' }}
+        run: echo "::warning::frontend sin package-lock.json; lint, typecheck, tests y build NO se ejecutaron"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        if: ${{ hashFiles('frontend/package-lock.json') != '' }}
+        with:
+          node-version: "22"
+      - name: Verificar frontend
+        if: ${{ hashFiles('frontend/package-lock.json') != '' }}
+        run: |
+          npm --prefix frontend ci
+          npm --prefix frontend run lint
+          npm --prefix frontend run typecheck
+          npm --prefix frontend test -- --run
+          npm --prefix frontend run build

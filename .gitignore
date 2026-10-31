@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.ruff_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Datos locales: bases, sandboxes, manifests y outbox nunca se versionan
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+data/
+evidence/
+
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+secrets/

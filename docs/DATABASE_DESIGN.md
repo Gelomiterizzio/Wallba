@@ -27,10 +27,11 @@ erDiagram
 | approvals P3 | id PK, request_id UNIQUE FK, snapshot_json,digest, policy_id/version, resource_version, expires_at,status,row_version,approver_id,reason,consumed_at | status/expiry |
 | executions P3 | execution_id PK, request_id UNIQUE FK, state, nonce_hash UNIQUE, claimed_at,result_digest,receipt_json | state |
 | audit_events P4 | event_id PK, sequence UNIQUE, request_id nullable FK, type,timestamp,fields_json,previous_hash,event_hash | request_id, timestamp/id, agent/tool/decision |
-| demo_runs P1 | run_id PK,scenario_id,seed,fixture_digest,status,baseline_env,protected_env,created_by, started_at,completed_at | status,scenario_id |
+| agent_runs P1 | run_id PK, agent FK, scenario_id, status, request_ids_json, transcript_json, created_by, created_at | status |
+| demo_runs P1 | run_id PK,scenario_id,seed,fixture_digest,status,baseline_env,protected_env,created_by, started_at,completed_at,state_json | status,scenario_id; UNIQUE parcial de un solo run activo |
 | evidence P1 | evidence_id PK,run_id FK,manifest_json,manifest_digest,schema_version | run_id |
 
-En ejecutor P1: `execution_journal(execution_id PK, nonce_hash UNIQUE, request_digest, state, result_json, effect_count)`, `demo_records(id PK, tenant_marker, label, version)`, `outbox(message_id PK, execution_id UNIQUE, to_address, subject, body_digest, status='SIMULATED')`. No usar foreign keys hacia otra DB; enlazar por UUID en receipts.
+En ejecutor P1: `execution_journal(execution_id PK, nonce_hash UNIQUE, request_digest, state, result_json, effect_count)`, `demo_records(id PK, tenant_marker, label, version)`, `outbox(message_id PK, execution_id UNIQUE, to_address, subject, body_digest, status='SIMULATED')`, `resource_versions(resource_id PK, version)`. Cada run tiene su propio archivo en un directorio etiquetado. No usar foreign keys hacia otra DB; enlazar por UUID en receipts.
 
 JSON no es excusa para omitir esquema: validar al entrar/salir y migrar versiones. UTC consistente. Configurar foreign_keys ON por conexión, WAL y busy_timeout acotado 5s; probar BEGIN IMMEDIATE/CAS con el driver seleccionado, no asumir semántica de PostgreSQL. Un worker de API no elimina carreras entre requests o reinicios. No mantener transacción de control abierta durante HTTP al ejecutor.
 

@@ -1,0 +1,2351 @@
+{
+  "components": {
+    "schemas": {
+      "AgentDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind_label": {
+            "title": "Kind Label",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "resource_scopes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Resource Scopes",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tools": {
+            "items": {
+              "enum": [
+                "file.read",
+                "email.send",
+                "record.delete",
+                "db.query"
+              ],
+              "type": "string"
+            },
+            "title": "Tools",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "tools",
+          "status",
+          "resource_scopes",
+          "kind_label"
+        ],
+        "title": "AgentDetail",
+        "type": "object"
+      },
+      "AgentRunAccepted": {
+        "additionalProperties": false,
+        "properties": {
+          "run_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "RUNNING",
+              "COMPLETED",
+              "FAILED"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "status"
+        ],
+        "title": "AgentRunAccepted",
+        "type": "object"
+      },
+      "AgentRunCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "scenario_id": {
+            "enum": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08",
+              "S09",
+              "S10"
+            ],
+            "title": "Scenario Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario_id"
+        ],
+        "title": "AgentRunCreate",
+        "type": "object"
+      },
+      "AgentRunView": {
+        "additionalProperties": false,
+        "properties": {
+          "agent_id": {
+            "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "agent_kind_label": {
+            "title": "Agent Kind Label",
+            "type": "string"
+          },
+          "request_ids": {
+            "items": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "title": "Request Ids",
+            "type": "array"
+          },
+          "run_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "scenario_id": {
+            "enum": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08",
+              "S09",
+              "S10"
+            ],
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "RUNNING",
+              "COMPLETED",
+              "FAILED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "transcript": {
+            "items": {
+              "$ref": "#/components/schemas/TranscriptEntry"
+            },
+            "title": "Transcript",
+            "type": "array"
+          }
+        },
+        "required": [
+          "run_id",
+          "agent_id",
+          "scenario_id",
+          "status",
+          "request_ids",
+          "transcript",
+          "agent_kind_label"
+        ],
+        "title": "AgentRunView",
+        "type": "object"
+      },
+      "AgentSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "tools": {
+            "items": {
+              "enum": [
+                "file.read",
+                "email.send",
+                "record.delete",
+                "db.query"
+              ],
+              "type": "string"
+            },
+            "title": "Tools",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "tools",
+          "status"
+        ],
+        "title": "AgentSummary",
+        "type": "object"
+      },
+      "DbQueryCall": {
+        "additionalProperties": false,
+        "properties": {
+          "agent_id": {
+            "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "operation": {
+            "const": "query",
+            "title": "Operation",
+            "type": "string"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/DbQueryParams"
+          },
+          "request_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "resource_id": {
+            "const": "query:demo-records",
+            "title": "Resource Id",
+            "type": "string"
+          },
+          "tool": {
+            "const": "db.query",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "agent_id",
+          "tool",
+          "operation",
+          "resource_id",
+          "parameters"
+        ],
+        "title": "DbQueryCall",
+        "type": "object"
+      },
+      "DbQueryParams": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "query_id": {
+            "enum": [
+              "list_records",
+              "count_records"
+            ],
+            "title": "Query Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query_id",
+          "limit"
+        ],
+        "title": "DbQueryParams",
+        "type": "object"
+      },
+      "DbQueryResult": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Count"
+          },
+          "rows": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/RecordRow"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rows"
+          },
+          "tool": {
+            "const": "db.query",
+            "default": "db.query",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rows",
+          "count"
+        ],
+        "title": "DbQueryResult",
+        "type": "object"
+      },
+      "DecisionEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "decision": {
+            "enum": [
+              "ALLOW",
+              "DENY",
+              "REQUIRE_APPROVAL"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "matched_rule_ids": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "title": "Matched Rule Ids",
+            "type": "array"
+          },
+          "policy_id": {
+            "anyOf": [
+              {
+                "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Id"
+          },
+          "policy_version": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Version"
+          },
+          "reason_code": {
+            "enum": [
+              "RULE_ALLOW",
+              "RULE_DENY",
+              "DEFAULT_DENY",
+              "APPROVAL_REQUIRED",
+              "POLICY_MISSING",
+              "POLICY_INVALID",
+              "AUTHORIZATION_UNAVAILABLE",
+              "SCOPE_DENIED",
+              "DIGEST_MISMATCH",
+              "STALE_POLICY",
+              "STALE_RESOURCE",
+              "APPROVAL_EXPIRED",
+              "APPROVAL_ALREADY_CONSUMED",
+              "AUDIT_UNAVAILABLE",
+              "EXECUTION_UNKNOWN"
+            ],
+            "title": "Reason Code",
+            "type": "string"
+          },
+          "request_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "risk": {
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ],
+            "title": "Risk",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "decision",
+          "reason_code",
+          "matched_rule_ids",
+          "policy_id",
+          "policy_version",
+          "risk"
+        ],
+        "title": "DecisionEnvelope",
+        "type": "object"
+      },
+      "DemoRunAccepted": {
+        "additionalProperties": false,
+        "properties": {
+          "run_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "RUNNING",
+              "WAITING_APPROVAL",
+              "WAITING_ADMIN_INPUT",
+              "COMPLETED",
+              "INCOMPLETE",
+              "UNKNOWN"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "status"
+        ],
+        "title": "DemoRunAccepted",
+        "type": "object"
+      },
+      "DemoRunCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "const": "paired",
+            "title": "Mode",
+            "type": "string"
+          },
+          "scenario_id": {
+            "enum": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08",
+              "S09",
+              "S10"
+            ],
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "seed": {
+            "maximum": 2147483647.0,
+            "minimum": 0.0,
+            "title": "Seed",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "seed",
+          "mode"
+        ],
+        "title": "DemoRunCreate",
+        "type": "object"
+      },
+      "DemoRunView": {
+        "additionalProperties": false,
+        "properties": {
+          "agent_kind_label": {
+            "title": "Agent Kind Label",
+            "type": "string"
+          },
+          "baseline": {
+            "$ref": "#/components/schemas/SideView"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "evidence_id": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence Id"
+          },
+          "fixture_digest": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fixture Digest"
+          },
+          "protected": {
+            "$ref": "#/components/schemas/SideView"
+          },
+          "run_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "scenario_id": {
+            "enum": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08",
+              "S09",
+              "S10"
+            ],
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          },
+          "started_at": {
+            "format": "date-time",
+            "title": "Started At",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "RUNNING",
+              "WAITING_APPROVAL",
+              "WAITING_ADMIN_INPUT",
+              "COMPLETED",
+              "INCOMPLETE",
+              "UNKNOWN"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "scenario_id",
+          "seed",
+          "status",
+          "fixture_digest",
+          "baseline",
+          "protected",
+          "evidence_id",
+          "started_at",
+          "completed_at",
+          "agent_kind_label"
+        ],
+        "title": "DemoRunView",
+        "type": "object"
+      },
+      "EmailSendCall": {
+        "additionalProperties": false,
+        "properties": {
+          "agent_id": {
+            "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "operation": {
+            "const": "send",
+            "title": "Operation",
+            "type": "string"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/EmailSendParams"
+          },
+          "request_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "resource_id": {
+            "const": "mailbox:demo-outbox",
+            "title": "Resource Id",
+            "type": "string"
+          },
+          "tool": {
+            "const": "email.send",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "agent_id",
+          "tool",
+          "operation",
+          "resource_id",
+          "parameters"
+        ],
+        "title": "EmailSendCall",
+        "type": "object"
+      },
+      "EmailSendParams": {
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "maxLength": 4096,
+            "title": "Body",
+            "type": "string"
+          },
+          "subject": {
+            "maxLength": 120,
+            "title": "Subject",
+            "type": "string"
+          },
+          "to": {
+            "maxLength": 254,
+            "minLength": 3,
+            "pattern": "^[^@\\s]+@[^@\\s]+\\.test$",
+            "title": "To",
+            "type": "string"
+          }
+        },
+        "required": [
+          "to",
+          "subject",
+          "body"
+        ],
+        "title": "EmailSendParams",
+        "type": "object"
+      },
+      "EmailSendResult": {
+        "additionalProperties": false,
+        "properties": {
+          "delivery": {
+            "const": "SIMULATED",
+            "default": "SIMULATED",
+            "title": "Delivery",
+            "type": "string"
+          },
+          "message_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "tool": {
+            "const": "email.send",
+            "default": "email.send",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message_id"
+        ],
+        "title": "EmailSendResult",
+        "type": "object"
+      },
+      "ErrorBody": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "details": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ErrorDetail"
+            },
+            "title": "Details",
+            "type": "array"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "request_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "request_id"
+        ],
+        "title": "ErrorBody",
+        "type": "object"
+      },
+      "ErrorDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "field": {
+            "title": "Field",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "code"
+        ],
+        "title": "ErrorDetail",
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorBody"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse",
+        "type": "object"
+      },
+      "EvidenceView": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "manifest": {
+            "additionalProperties": true,
+            "title": "Manifest",
+            "type": "object"
+          },
+          "manifest_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Manifest Digest",
+            "type": "string"
+          },
+          "run_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "run_id",
+          "schema_version",
+          "manifest",
+          "manifest_digest"
+        ],
+        "title": "EvidenceView",
+        "type": "object"
+      },
+      "ExecutionReceipt": {
+        "additionalProperties": false,
+        "properties": {
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "effect_count": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effect Count"
+          },
+          "evidence_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "execution_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Execution Id",
+            "type": "string"
+          },
+          "request_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "result_digest": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result Digest"
+          },
+          "state": {
+            "enum": [
+              "SUCCEEDED",
+              "FAILED",
+              "UNKNOWN"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "execution_id",
+          "request_id",
+          "state",
+          "result_digest",
+          "effect_count",
+          "evidence_id",
+          "completed_at"
+        ],
+        "title": "ExecutionReceipt",
+        "type": "object"
+      },
+      "FileReadCall": {
+        "additionalProperties": false,
+        "properties": {
+          "agent_id": {
+            "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "operation": {
+            "const": "read",
+            "title": "Operation",
+            "type": "string"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/FileReadParams"
+          },
+          "request_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "resource_id": {
+            "enum": [
+              "file:public-guide",
+              "file:restricted-ledger"
+            ],
+            "title": "Resource Id",
+            "type": "string"
+          },
+          "tool": {
+            "const": "file.read",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "agent_id",
+          "tool",
+          "operation",
+          "resource_id",
+          "parameters"
+        ],
+        "title": "FileReadCall",
+        "type": "object"
+      },
+      "FileReadParams": {
+        "additionalProperties": false,
+        "properties": {
+          "max_bytes": {
+            "maximum": 16384,
+            "minimum": 1,
+            "title": "Max Bytes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "max_bytes"
+        ],
+        "title": "FileReadParams",
+        "type": "object"
+      },
+      "FileReadResult": {
+        "additionalProperties": false,
+        "properties": {
+          "bytes": {
+            "maximum": 16384,
+            "minimum": 0,
+            "title": "Bytes",
+            "type": "integer"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content"
+          },
+          "content_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Content Digest",
+            "type": "string"
+          },
+          "tool": {
+            "const": "file.read",
+            "default": "file.read",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "content",
+          "content_digest",
+          "bytes"
+        ],
+        "title": "FileReadResult",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HealthLive": {
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "const": "ok",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "HealthLive",
+        "type": "object"
+      },
+      "HealthReady": {
+        "additionalProperties": false,
+        "properties": {
+          "database": {
+            "title": "Database",
+            "type": "boolean"
+          },
+          "executor": {
+            "title": "Executor",
+            "type": "boolean"
+          },
+          "policy": {
+            "title": "Policy",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "database",
+          "policy",
+          "executor"
+        ],
+        "title": "HealthReady",
+        "type": "object"
+      },
+      "MatrixRow": {
+        "additionalProperties": false,
+        "description": "Fila observada: solo existe si hubo un run persistido con evidencia.",
+        "properties": {
+          "baseline_effect_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Effect Count"
+          },
+          "baseline_state": {
+            "enum": [
+              "PENDING",
+              "WAITING_APPROVAL",
+              "WAITING_ADMIN_INPUT",
+              "OBSERVED",
+              "INCOMPLETE",
+              "UNKNOWN",
+              "NOT_APPLICABLE"
+            ],
+            "title": "Baseline State",
+            "type": "string"
+          },
+          "evidence_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Evidence Id",
+            "type": "string"
+          },
+          "observed_at": {
+            "format": "date-time",
+            "title": "Observed At",
+            "type": "string"
+          },
+          "policy_id": {
+            "anyOf": [
+              {
+                "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Id"
+          },
+          "policy_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Version"
+          },
+          "protected_decision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protected Decision"
+          },
+          "protected_effect_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protected Effect Count"
+          },
+          "protected_reason_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protected Reason Code"
+          },
+          "protected_state": {
+            "enum": [
+              "PENDING",
+              "WAITING_APPROVAL",
+              "WAITING_ADMIN_INPUT",
+              "OBSERVED",
+              "INCOMPLETE",
+              "UNKNOWN",
+              "NOT_APPLICABLE"
+            ],
+            "title": "Protected State",
+            "type": "string"
+          },
+          "risk": {
+            "anyOf": [
+              {
+                "enum": [
+                  "LOW",
+                  "MEDIUM",
+                  "HIGH",
+                  "CRITICAL"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk"
+          },
+          "run_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "scenario_id": {
+            "enum": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08",
+              "S09",
+              "S10"
+            ],
+            "title": "Scenario Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "RUNNING",
+              "WAITING_APPROVAL",
+              "WAITING_ADMIN_INPUT",
+              "COMPLETED",
+              "INCOMPLETE",
+              "UNKNOWN"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "run_id",
+          "status",
+          "risk",
+          "policy_id",
+          "policy_version",
+          "baseline_state",
+          "baseline_effect_count",
+          "protected_state",
+          "protected_decision",
+          "protected_reason_code",
+          "protected_effect_count",
+          "evidence_id",
+          "observed_at"
+        ],
+        "title": "MatrixRow",
+        "type": "object"
+      },
+      "Page_AgentSummary_": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AgentSummary"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "title": "Page[AgentSummary]",
+        "type": "object"
+      },
+      "Page_MatrixRow_": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MatrixRow"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "title": "Page[MatrixRow]",
+        "type": "object"
+      },
+      "Page_ScenarioView_": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ScenarioView"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "title": "Page[ScenarioView]",
+        "type": "object"
+      },
+      "RecordDeleteCall": {
+        "additionalProperties": false,
+        "properties": {
+          "agent_id": {
+            "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "operation": {
+            "const": "delete",
+            "title": "Operation",
+            "type": "string"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/RecordDeleteParams"
+          },
+          "request_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "resource_id": {
+            "const": "table:demo-records",
+            "title": "Resource Id",
+            "type": "string"
+          },
+          "tool": {
+            "const": "record.delete",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "agent_id",
+          "tool",
+          "operation",
+          "resource_id",
+          "parameters"
+        ],
+        "title": "RecordDeleteCall",
+        "type": "object"
+      },
+      "RecordDeleteParams": {
+        "additionalProperties": false,
+        "properties": {
+          "record_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_id"
+        ],
+        "title": "RecordDeleteParams",
+        "type": "object"
+      },
+      "RecordDeleteResult": {
+        "additionalProperties": false,
+        "properties": {
+          "deleted_count": {
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Deleted Count",
+            "type": "integer"
+          },
+          "tool": {
+            "const": "record.delete",
+            "default": "record.delete",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "deleted_count"
+        ],
+        "title": "RecordDeleteResult",
+        "type": "object"
+      },
+      "RecordRow": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ],
+        "title": "RecordRow",
+        "type": "object"
+      },
+      "RequestView": {
+        "additionalProperties": false,
+        "description": "Vista de una solicitud de herramienta devuelta por el gateway (P3).",
+        "properties": {
+          "approval_id": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Id"
+          },
+          "decision": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DecisionEnvelope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "execution_id": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Id"
+          },
+          "receipt": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutionReceipt"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "request_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "RECEIVED",
+              "DENIED",
+              "PENDING_APPROVAL",
+              "READY",
+              "EXECUTING",
+              "SUCCEEDED",
+              "FAILED",
+              "UNKNOWN",
+              "REJECTED",
+              "EXPIRED",
+              "CANCELLED"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "state",
+          "decision",
+          "approval_id",
+          "execution_id"
+        ],
+        "title": "RequestView",
+        "type": "object"
+      },
+      "ResourceSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "journal_count": {
+            "minimum": 0.0,
+            "title": "Journal Count",
+            "type": "integer"
+          },
+          "outbox_count": {
+            "minimum": 0.0,
+            "title": "Outbox Count",
+            "type": "integer"
+          },
+          "record_count": {
+            "minimum": 0.0,
+            "title": "Record Count",
+            "type": "integer"
+          },
+          "state_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "State Digest",
+            "type": "string"
+          }
+        },
+        "required": [
+          "state_digest",
+          "record_count",
+          "outbox_count",
+          "journal_count"
+        ],
+        "title": "ResourceSnapshot",
+        "type": "object"
+      },
+      "ScenarioExpectation": {
+        "additionalProperties": false,
+        "description": "Expectativa de diseño: nunca es un resultado observado.",
+        "properties": {
+          "baseline": {
+            "title": "Baseline",
+            "type": "string"
+          },
+          "label": {
+            "const": "EXPECTATION",
+            "default": "EXPECTATION",
+            "title": "Label",
+            "type": "string"
+          },
+          "protected": {
+            "title": "Protected",
+            "type": "string"
+          }
+        },
+        "required": [
+          "baseline",
+          "protected"
+        ],
+        "title": "ScenarioExpectation",
+        "type": "object"
+      },
+      "ScenarioView": {
+        "additionalProperties": false,
+        "properties": {
+          "expectation": {
+            "$ref": "#/components/schemas/ScenarioExpectation"
+          },
+          "id": {
+            "enum": [
+              "S01",
+              "S02",
+              "S03",
+              "S04",
+              "S05",
+              "S06",
+              "S07",
+              "S08",
+              "S09",
+              "S10"
+            ],
+            "title": "Id",
+            "type": "string"
+          },
+          "risk": {
+            "anyOf": [
+              {
+                "enum": [
+                  "LOW",
+                  "MEDIUM",
+                  "HIGH",
+                  "CRITICAL"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "tool": {
+            "anyOf": [
+              {
+                "enum": [
+                  "file.read",
+                  "email.send",
+                  "record.delete",
+                  "db.query"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tool"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "title",
+          "tool",
+          "risk",
+          "expectation"
+        ],
+        "title": "ScenarioView",
+        "type": "object"
+      },
+      "SideView": {
+        "additionalProperties": false,
+        "properties": {
+          "after": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResourceSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "approval_ids": {
+            "items": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "title": "Approval Ids",
+            "type": "array"
+          },
+          "before": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResourceSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/DecisionEnvelope"
+            },
+            "title": "Decisions",
+            "type": "array"
+          },
+          "environment_id": {
+            "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+            "title": "Environment Id",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "receipts": {
+            "items": {
+              "$ref": "#/components/schemas/ExecutionReceipt"
+            },
+            "title": "Receipts",
+            "type": "array"
+          },
+          "request_ids": {
+            "items": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            "title": "Request Ids",
+            "type": "array"
+          },
+          "state": {
+            "enum": [
+              "PENDING",
+              "WAITING_APPROVAL",
+              "WAITING_ADMIN_INPUT",
+              "OBSERVED",
+              "INCOMPLETE",
+              "UNKNOWN",
+              "NOT_APPLICABLE"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "environment_id",
+          "state",
+          "reason",
+          "before",
+          "after",
+          "decisions",
+          "receipts",
+          "request_ids",
+          "approval_ids"
+        ],
+        "title": "SideView",
+        "type": "object"
+      },
+      "ToolCall": {
+        "discriminator": {
+          "mapping": {
+            "db.query": "#/components/schemas/DbQueryCall",
+            "email.send": "#/components/schemas/EmailSendCall",
+            "file.read": "#/components/schemas/FileReadCall",
+            "record.delete": "#/components/schemas/RecordDeleteCall"
+          },
+          "propertyName": "tool"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/FileReadCall"
+          },
+          {
+            "$ref": "#/components/schemas/EmailSendCall"
+          },
+          {
+            "$ref": "#/components/schemas/RecordDeleteCall"
+          },
+          {
+            "$ref": "#/components/schemas/DbQueryCall"
+          }
+        ]
+      },
+      "ToolResult": {
+        "discriminator": {
+          "mapping": {
+            "db.query": "#/components/schemas/DbQueryResult",
+            "email.send": "#/components/schemas/EmailSendResult",
+            "file.read": "#/components/schemas/FileReadResult",
+            "record.delete": "#/components/schemas/RecordDeleteResult"
+          },
+          "propertyName": "tool"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/FileReadResult"
+          },
+          {
+            "$ref": "#/components/schemas/EmailSendResult"
+          },
+          {
+            "$ref": "#/components/schemas/RecordDeleteResult"
+          },
+          {
+            "$ref": "#/components/schemas/DbQueryResult"
+          }
+        ]
+      },
+      "TranscriptEntry": {
+        "additionalProperties": false,
+        "properties": {
+          "intent": {
+            "title": "Intent",
+            "type": "string"
+          },
+          "request_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "resource_id": {
+            "title": "Resource Id",
+            "type": "string"
+          },
+          "step": {
+            "minimum": 0.0,
+            "title": "Step",
+            "type": "integer"
+          },
+          "tool": {
+            "enum": [
+              "file.read",
+              "email.send",
+              "record.delete",
+              "db.query"
+            ],
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "step",
+          "intent",
+          "tool",
+          "resource_id",
+          "request_id"
+        ],
+        "title": "TranscriptEntry",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "WALLBA API",
+    "version": "1"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/agent-runs": {
+      "post": {
+        "operationId": "agent_runs_create_api_v1_agent_runs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentRunCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentRunAccepted"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Agent Runs Create",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/api/v1/agent-runs/{run_id}": {
+      "get": {
+        "operationId": "agent_runs_detail_api_v1_agent_runs__run_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentRunView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Agent Runs Detail",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/api/v1/agents": {
+      "get": {
+        "operationId": "agents_index_api_v1_agents_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AgentSummary_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Agents Index",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/api/v1/agents/{agent_id}": {
+      "get": {
+        "operationId": "agents_detail_api_v1_agents__agent_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "title": "Agent Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Agents Detail",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/api/v1/demo-runs": {
+      "post": {
+        "operationId": "demo_runs_create_api_v1_demo_runs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DemoRunCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoRunAccepted"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Demo Runs Create",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/api/v1/demo-runs/{run_id}": {
+      "get": {
+        "operationId": "demo_runs_detail_api_v1_demo_runs__run_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoRunView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Demo Runs Detail",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/api/v1/demo-runs/{run_id}/evidence": {
+      "get": {
+        "operationId": "demo_runs_evidence_api_v1_demo_runs__run_id__evidence_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Demo Runs Evidence",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/api/v1/health/live": {
+      "get": {
+        "operationId": "live_api_v1_health_live_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthLive"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Live"
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "operationId": "ready_api_v1_health_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthReady"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Ready"
+      }
+    },
+    "/api/v1/matrix": {
+      "get": {
+        "operationId": "matrix_api_v1_matrix_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "scenario_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "S01",
+                    "S02",
+                    "S03",
+                    "S04",
+                    "S05",
+                    "S06",
+                    "S07",
+                    "S08",
+                    "S09",
+                    "S10"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Scenario Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_MatrixRow_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Matrix",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/api/v1/scenarios": {
+      "get": {
+        "operationId": "scenarios_index_api_v1_scenarios_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ScenarioView_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Scenarios Index",
+        "tags": [
+          "demo"
+        ]
+      }
+    }
+  }
+}

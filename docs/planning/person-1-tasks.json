@@ -23,7 +23,7 @@
     "acceptance": "Given un campo extra o tool/operation incoherentes, When se valida el DTO, Then se rechaza y Python/TypeScript conservan el mismo contrato.",
     "test": "pytest tests/contracts; npm --prefix frontend run typecheck",
     "estimate_reason": "0.8 tipos/puertos + 0.5 generador/fixtures + 0.4 revisión/pruebas + 0.3 documentación.",
-    "state": "Pendiente"
+    "state": "Implementada; pendiente revisión de consumidores P2/P3/P4"
   },
   {
     "id": "WAL-P1-002",
@@ -52,7 +52,7 @@
     "acceptance": "Given un entorno limpio y configuración válida, When se instalan locks, Then arranca health local; con secreto requerido ausente falla cerrado.",
     "test": "pytest tests/foundation/test_config.py; npm --prefix frontend run build",
     "estimate_reason": "0.8 estructura/locks + 0.5 configuración + 0.4 pruebas smoke + 0.3 guía.",
-    "state": "Pendiente"
+    "state": "Implementada; npm build pendiente del frontend P4"
   },
   {
     "id": "WAL-P1-003",
@@ -79,7 +79,7 @@
     "acceptance": "Given DB vacía o fixture previo, When se aplica migración, Then existen restricciones y no se pierden datos anteriores.",
     "test": "pytest tests/foundation/test_migrations.py",
     "estimate_reason": "0.7 base/DDL propio + 0.5 coordinación migraciones + 0.5 pruebas + 0.3 recuperación.",
-    "state": "Pendiente"
+    "state": "Implementada"
   },
   {
     "id": "WAL-P1-004",
@@ -106,7 +106,7 @@
     "acceptance": "Given parámetros válidos sobre fixture, When se ejecuta cada herramienta, Then el efecto/resultados son medibles; parámetros extra/rutas/SQL se rechazan.",
     "test": "pytest tests/executor/test_tools.py",
     "estimate_reason": "1.4 adaptadores + 0.5 aislamiento/catálogos + 0.8 pruebas/errores + 0.3 documentación.",
-    "state": "Pendiente"
+    "state": "Implementada; prueba de symlink pendiente en Linux"
   },
   {
     "id": "WAL-P1-005",
@@ -133,7 +133,7 @@
     "acceptance": "Given S08 con instrucción maliciosa ficticia, When corre ScriptedAgent, Then genera la llamada destructiva guionada y declara que no es inferencia de LLM.",
     "test": "pytest tests/agent",
     "estimate_reason": "0.8 adapter y trace + 0.5 API + 0.5 pruebas + 0.2 límites de demostración.",
-    "state": "Pendiente"
+    "state": "Implementada"
   },
   {
     "id": "WAL-P1-006",
@@ -163,7 +163,7 @@
     "acceptance": "Given capacidad alterada, expirada, replay o entorno distinto, When se invoca ejecutor, Then cero efecto nuevo; receipt duradero preserva resultado tras reinicio.",
     "test": "pytest tests/executor/test_capabilities.py tests/executor/test_recovery.py",
     "estimate_reason": "1.0 seguridad del puerto + 0.8 journal/transacciones + 0.9 fallos/concurrencia + 0.3 revisión P3.",
-    "state": "Pendiente"
+    "state": "Implementada; pendiente confirmar firma con P3"
   },
   {
     "id": "WAL-P1-007",
@@ -191,7 +191,7 @@
     "acceptance": "Given una seed idéntica, When se preparan los dos entornos, Then los digests funcionales iniciales coinciden y los volúmenes son distintos.",
     "test": "pytest tests/demo/test_fixtures.py",
     "estimate_reason": "0.7 dataset + 0.5 catálogo + 0.6 reproducibilidad + 0.2 coordinación/documentación.",
-    "state": "Pendiente"
+    "state": "Implementada; S07/S09/S10 requieren harness P2/P3"
   },
   {
     "id": "WAL-P1-008",
@@ -223,7 +223,7 @@
     "acceptance": "Given S04 desde fixture limpio, When completa runner real, Then baseline elimina y protected conserva fila con decisión, journal y manifest verificables.",
     "test": "pytest tests/demo/test_runner.py tests/demo/test_evidence.py",
     "estimate_reason": "1.5 orchestration + 0.8 API/persistencia + 0.9 evidencia/fallos + 0.5 integración + 0.3 guía demo.",
-    "state": "Pendiente"
+    "state": "Parcial: probada con FakeGateway; falta gateway real P3"
   },
   {
     "id": "WAL-P1-009",
@@ -256,7 +256,7 @@
     "acceptance": "Given Compose de demo, When agente intenta acceder al ejecutor o sus volúmenes, Then no tiene red/credenciales/mounts y las pruebas de aislamiento fallan si se añade acceso.",
     "test": "docker compose -f infra/compose.yaml config; pytest tests/infra",
     "estimate_reason": "1.1 Compose/Docker + 0.7 CI + 0.8 pruebas seguridad/build + 0.4 instrucciones.",
-    "state": "Pendiente"
+    "state": "Implementada; imagen web pendiente del frontend P4 y CI sin ejecutar en GitHub"
   },
   {
     "id": "WAL-P1-010",
@@ -284,6 +284,6 @@
     "acceptance": "Given un fallo a mitad de run o reinicio tras efecto, When se recupera, Then se conserva evidencia y no se repite una operación por ausencia de respuesta.",
     "test": "pytest tests/integration/test_foundation_demo.py tests/foundation/test_restore.py",
     "estimate_reason": "0.7 integración + 0.5 recuperación + 0.5 evidencia/revisión + 0.3 documentación.",
-    "state": "Pendiente"
+    "state": "Parcial: recuperación lista; falta integrar P2/P3/P4"
   }
 ]

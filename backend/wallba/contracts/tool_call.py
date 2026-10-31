@@ -9,12 +9,11 @@ from __future__ import annotations
 
 from typing import Annotated, Literal, Union
 
-from pydantic import Field, field_validator
+from pydantic import Field, TypeAdapter
 
-from wallba.contracts.common import StrictModel, ensure_nfc
+from wallba.contracts.common import Identifier, SafeText, StrictModel, Uuid
 
-RequestId = Annotated[str, Field(min_length=1, max_length=64)]
-AgentId = Annotated[str, Field(min_length=1, max_length=64)]
+ToolName = Literal["file.read", "email.send", "record.delete", "db.query"]
 
 
 class FileReadParams(StrictModel):
@@ -23,19 +22,12 @@ class FileReadParams(StrictModel):
 
 class EmailSendParams(StrictModel):
     to: str = Field(min_length=3, max_length=254, pattern=r"^[^@\s]+@[^@\s]+\.test$")
-    subject: str = Field(max_length=120)
-    body: str = Field(max_length=4096)
-
-    @field_validator("subject", "body")
-    @classmethod
-    def _nfc(cls, value: str, info) -> str:
-        return ensure_nfc(value, info.field_name)
+    subject: SafeText = Field(max_length=120)
+    body: SafeText = Field(max_length=4096)
 
 
 class RecordDeleteParams(StrictModel):
-    record_id: str = Field(
-        pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    )
+    record_id: Uuid
 
 
 class DbQueryParams(StrictModel):
@@ -43,36 +35,33 @@ class DbQueryParams(StrictModel):
     limit: int = Field(ge=1, le=100)
 
 
-class FileReadCall(StrictModel):
-    request_id: RequestId
-    agent_id: AgentId
+class ToolCallBase(StrictModel):
+    request_id: Uuid
+    agent_id: Identifier
+
+
+class FileReadCall(ToolCallBase):
     tool: Literal["file.read"]
     operation: Literal["read"]
     resource_id: Literal["file:public-guide", "file:restricted-ledger"]
     parameters: FileReadParams
 
 
-class EmailSendCall(StrictModel):
-    request_id: RequestId
-    agent_id: AgentId
+class EmailSendCall(ToolCallBase):
     tool: Literal["email.send"]
     operation: Literal["send"]
     resource_id: Literal["mailbox:demo-outbox"]
     parameters: EmailSendParams
 
 
-class RecordDeleteCall(StrictModel):
-    request_id: RequestId
-    agent_id: AgentId
+class RecordDeleteCall(ToolCallBase):
     tool: Literal["record.delete"]
     operation: Literal["delete"]
     resource_id: Literal["table:demo-records"]
     parameters: RecordDeleteParams
 
 
-class DbQueryCall(StrictModel):
-    request_id: RequestId
-    agent_id: AgentId
+class DbQueryCall(ToolCallBase):
     tool: Literal["db.query"]
     operation: Literal["query"]
     resource_id: Literal["query:demo-records"]
@@ -83,3 +72,4 @@ ToolCall = Annotated[
     Union[FileReadCall, EmailSendCall, RecordDeleteCall, DbQueryCall],
     Field(discriminator="tool"),
 ]
+TOOL_CALL_ADAPTER: TypeAdapter[ToolCall] = TypeAdapter(ToolCall)
