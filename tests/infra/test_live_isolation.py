@@ -76,18 +76,22 @@ def _in_service(service: str, *command: str) -> subprocess.CompletedProcess[str]
     return _compose("exec", "-T", service, *command)
 
 
+def _service_logs() -> str:
+    return _compose("logs", "--no-color", "--tail", "30", "api", "executor", "baseline").stdout
+
+
 @pytest.fixture(scope="module")
 def stack() -> Iterator[None]:
     up = _compose("up", "-d", "--build", "--wait", "--wait-timeout", "90", "api", "executor", "baseline", timeout=600)
     deadline = time.monotonic() + STARTUP_TIMEOUT_SECONDS
     try:
-        assert up.returncode == 0, up.stderr
+        assert up.returncode == 0, f"{up.stderr}\n{_service_logs()}"
         while time.monotonic() < deadline:
             if _in_service("api", "python", "-c", CONNECT, "127.0.0.1", "8000").returncode == 0:
                 break
             time.sleep(1)
         else:
-            pytest.fail("la API no arrancó a tiempo")
+            pytest.fail(f"la API no arrancó a tiempo\n{_service_logs()}")
         yield
     finally:
         _compose("down", "-v", "--remove-orphans")
