@@ -1,0 +1,13 @@
+[project]
+name = "wallba"
+version = "0.0.0"
+description = "WALLBA: firewall de permisos para agentes de IA (MVP sintético)"
+requires-python = ">=3.12"
+dependencies = [
+  "pydantic>=2.9",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3",
+]

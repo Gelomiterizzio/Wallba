@@ -1,0 +1,10 @@
+{
+  "request_id": "22222222-2222-4222-8222-222222222222",
+  "agent_id": "demo-agent",
+  "tool": "record.delete",
+  "operation": "delete",
+  "resource_id": "table:demo-records",
+  "parameters": {
+    "record_id": "3f2504e0-4f89-41d3-9a0c-0305e82c3301"
+  }
+}
