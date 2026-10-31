@@ -23,7 +23,7 @@
     "acceptance": "Given una sesión válida, When se visita cada ruta a 360/768/1440 px, Then la ruta activa y todas las acciones esenciales conservan foco visible.",
     "test": "Componentes, teclado, contraste medido y capturas responsive.",
     "estimate_reason": "0.5 diseño/investigación + 1.5 implementación + 0.5 pruebas + 0.5 integración/documentación.",
-    "state": "Pendiente"
+    "state": "Implementada; pendiente aprobar los tokens propuestos"
   },
   {
     "id": "WAL-P4-002",
@@ -53,7 +53,7 @@
     "acceptance": "Given datos simulados y expiración de sesión, When cambia la identidad, Then no quedan datos de la anterior y los mocks están identificados.",
     "test": "Cliente, validación contractual de fixtures y cambio de sesión.",
     "estimate_reason": "0.25 investigación + 0.75 implementación + 0.5 tests + 0.5 integración/documentación.",
-    "state": "Pendiente"
+    "state": "Implementada; esquema de sesión por confirmar con P3"
   },
   {
     "id": "WAL-P4-003",
@@ -81,7 +81,7 @@
     "acceptance": "Given productores concurrentes, When insertan eventos, Then secuencias únicas, cadena verificable y secretos sintéticos ausentes de almacenamiento y exportación.",
     "test": "Rollback, redacción recursiva, integración del helper canónico P1, carreras y cadena alterada.",
     "estimate_reason": "0.75 diseño/investigación + 1.5 implementación + 1 pruebas adversariales + 0.75 integración/documentación.",
-    "state": "Pendiente"
+    "state": "Implementada"
   },
   {
     "id": "WAL-P4-004",
@@ -112,7 +112,7 @@
     "acceptance": "Given ventana fija, When se consultan tabla y dashboard, Then los totales coinciden y la paginación no repite ni omite eventos del snapshot.",
     "test": "API autenticada, errores, filtros, límites, cursores y benchmark documentado.",
     "estimate_reason": "0.25 diseño + 1.25 construcción + 0.75 tests + 0.75 integración/documentación.",
-    "state": "Pendiente"
+    "state": "Implementada; RBAC real pendiente de P3"
   },
   {
     "id": "WAL-P4-005",
@@ -141,7 +141,7 @@
     "acceptance": "Given cero eventos y dos agentes, When se abre dashboard, Then muestra ceros reales, vacío y agentes sin inferir permisos adicionales.",
     "test": "Componentes, contadores, vacío, error y detalle enlazable.",
     "estimate_reason": "0.25 diseño + 0.75 construcción + 0.5 tests + 0.5 integración/documentación.",
-    "state": "Pendiente"
+    "state": "Implementada con datos de ejemplo; falta recorrido con sesión real de P3"
   },
   {
     "id": "WAL-P4-006",
@@ -169,7 +169,7 @@
     "acceptance": "Given request_id, When se filtra y abre detalle, Then solo aparecen eventos correlacionados y exportación conserva los IDs.",
     "test": "UI/API, filtros, enlace directo, errores y exportación.",
     "estimate_reason": "0.25 diseño + 0.75 construcción + 0.5 tests + 0.5 integración/documentación.",
-    "state": "Pendiente"
+    "state": "Implementada con datos de ejemplo; falta recorrido con sesión real de P3"
   },
   {
     "id": "WAL-P4-007",
@@ -199,7 +199,7 @@
     "acceptance": "Given eliminación prohibida, When finaliza comparación, Then muestra efectos y decisión de cada rama únicamente según evidencia persistida de la ejecución.",
     "test": "Doble click, recarga, timeout, ramas parciales, aprobación y UNKNOWN con recursos sintéticos.",
     "estimate_reason": "0.5 modelado + 1.5 construcción + 1 tests + 1 integración/documentación.",
-    "state": "Pendiente"
+    "state": "Implementada con datos de ejemplo; falta un run real con gateway de P3"
   },
   {
     "id": "WAL-P4-008",
@@ -225,7 +225,7 @@
     "acceptance": "Given diez escenarios y tres runs, When se abre matriz, Then siete filas siguen No ejecutado y no se presentan como pruebas superadas.",
     "test": "Fixture parcial validado y recorrido real de matriz.",
     "estimate_reason": "0.5 construcción + 0.25 tests + 0.25 documentación/integración.",
-    "state": "Pendiente"
+    "state": "Implementada con datos de ejemplo; falta recorrido con backend real"
   },
   {
     "id": "WAL-P4-009",
@@ -261,6 +261,6 @@
     "acceptance": "Given entorno limpio con semillas documentadas, When se ejecuta recorrido, Then los resultados enlazan evidencia, no quedan violaciones críticas de accesibilidad conocidas y los errores tienen estado comprensible.",
     "test": "Playwright, axe y revisión manual de teclado/zoom/lector; tests de módulo permanecen con cada propietario.",
     "estimate_reason": "0.5 planificación + 1 automatización + 1 integración + 1 validación visual/accesibilidad + 0.5 documentación.",
-    "state": "Pendiente"
+    "state": "Parcial: E2E y axe sobre datos de ejemplo; faltan P3, S01-S10 reales y revisión con lector de pantalla"
   }
 ]
