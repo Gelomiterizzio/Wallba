@@ -1,0 +1,24 @@
+# Agente aislado: sin código de ejecutor, sin fixtures, sin datos y sin volúmenes.
+FROM python:3.12-slim@sha256:aa943ce411423c7582288f18707ff66eddcbaeb510502d747a72aeb34f30d159
+
+ENV UV_NO_CACHE=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/app/backend UV_PROJECT_ENVIRONMENT=/opt/venv PATH=/opt/venv/bin:$PATH
+RUN pip install --no-cache-dir "uv==0.13.6"
+
+WORKDIR /app/backend
+COPY backend/pyproject.toml backend/uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+
+COPY backend/wallba/__init__.py ./wallba/__init__.py
+COPY backend/wallba/contracts ./wallba/contracts
+COPY backend/wallba/agent/__init__.py ./wallba/agent/__init__.py
+COPY backend/wallba/agent/scripted.py ./wallba/agent/scripted.py
+COPY backend/wallba/agent/http_gateway.py ./wallba/agent/http_gateway.py
+COPY backend/wallba/agent/worker.py ./wallba/agent/worker.py
+COPY backend/wallba/foundation/__init__.py ./wallba/foundation/__init__.py
+COPY backend/wallba/foundation/config.py ./wallba/foundation/config.py
+
+RUN useradd --uid 10001 --no-create-home wallba
+USER wallba
+
+# Proceso de un solo uso: docker compose --profile demo run --rm agent python -m wallba.agent.worker --scenario S04
+CMD ["python", "-m", "wallba.agent.worker", "--help"]

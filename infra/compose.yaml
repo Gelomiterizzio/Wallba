@@ -1,0 +1,145 @@
+# WALLBA: entorno local. Solo `web` publica un puerto, y solo en loopback.
+# Antes de arrancar: python scripts/generate_dev_secrets.py
+# Perfiles: `demo` añade baseline y agente; `web` añade la interfaz (requiere frontend de P4).
+name: wallba
+
+x-hardening: &hardening
+  read_only: true
+  tmpfs:
+    - /tmp
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  restart: "no"
+
+services:
+  api:
+    <<: *hardening
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.api
+    environment:
+      WALLBA_ROLE: control
+      WALLBA_DATA_DIR: /data
+      WALLBA_EXECUTOR_URL: http://executor:8001
+      WALLBA_BASELINE_URL: http://baseline:8002
+      WALLBA_CAPABILITY_KEY_ID: dev-key-1
+      WALLBA_CAPABILITY_SECRET_FILE: /run/secrets/capability_secret
+      WALLBA_EXECUTOR_TOKEN_FILE: /run/secrets/executor_token
+      WALLBA_BASELINE_TOKEN_FILE: /run/secrets/baseline_token
+      WALLBA_DEMO_ENABLED: ${WALLBA_DEMO_ENABLED:-false}
+      WALLBA_GIT_SHA: ${WALLBA_GIT_SHA:-}
+    secrets:
+      - capability_secret
+      - executor_token
+      - baseline_token
+    volumes:
+      - control_data:/data
+    networks:
+      - web_internal
+      - agent_internal
+      - executor_internal
+      - baseline_internal
+
+  executor:
+    <<: *hardening
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.executor
+    environment:
+      WALLBA_ROLE: executor
+      WALLBA_DATA_DIR: /data
+      WALLBA_CAPABILITY_KEY_ID: dev-key-1
+      WALLBA_CAPABILITY_SECRET_FILE: /run/secrets/capability_secret
+      WALLBA_EXECUTOR_TOKEN_FILE: /run/secrets/executor_token
+    secrets:
+      - capability_secret
+      - executor_token
+    volumes:
+      - executor_data:/data
+    networks:
+      - executor_internal
+
+  baseline:
+    <<: *hardening
+    profiles:
+      - demo
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.executor
+    command: ["uvicorn", "--factory", "wallba.executor.app:create_app_from_env", "--host", "0.0.0.0", "--port", "8002", "--workers", "1"]
+    environment:
+      WALLBA_ROLE: baseline
+      WALLBA_DATA_DIR: /data
+      WALLBA_BASELINE_TOKEN_FILE: /run/secrets/baseline_token
+    secrets:
+      - baseline_token
+    volumes:
+      - baseline_data:/data
+    networks:
+      - baseline_internal
+
+  agent:
+    <<: *hardening
+    profiles:
+      - demo
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.agent
+    environment:
+      WALLBA_ROLE: agent
+      WALLBA_API_URL: http://api:8000
+      WALLBA_AGENT_BEARER_FILE: /run/secrets/agent_bearer
+    secrets:
+      - agent_bearer
+    networks:
+      - agent_internal
+
+  web:
+    <<: *hardening
+    profiles:
+      - web
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.web
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - edge
+      - web_internal
+
+networks:
+  edge: {}
+  web_internal:
+    internal: true
+  agent_internal:
+    internal: true
+  executor_internal:
+    internal: true
+  baseline_internal:
+    internal: true
+
+volumes:
+  control_data:
+    labels:
+      com.wallba.project: "true"
+  executor_data:
+    labels:
+      com.wallba.project: "true"
+  baseline_data:
+    labels:
+      com.wallba.project: "true"
+
+secrets:
+  capability_secret:
+    file: ../secrets/capability_secret
+  executor_token:
+    file: ../secrets/executor_token
+  baseline_token:
+    file: ../secrets/baseline_token
+  agent_bearer:
+    file: ../secrets/agent_bearer
