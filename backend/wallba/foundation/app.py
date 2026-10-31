@@ -122,6 +122,24 @@ def create_app(
     return app
 
 
+def control_integrations(settings: Settings) -> Integrations:
+    """Puertos ya disponibles. Sin autorizador ni gateway de P3, sus rutas responden 503."""
+    # Imports locales: la imagen del ejecutor no incluye estos módulos.
+    from wallba.observability.router import router as observability_router
+    from wallba.observability.writer import AuditWriter
+    from wallba.policy.repository import SqlitePolicyRepository
+
+    def policy_ready() -> bool:
+        return SqlitePolicyRepository(settings.control_db_path).get_active_snapshot() is not None
+
+    return Integrations(
+        audit=AuditWriter(),
+        policy_ready=policy_ready,
+        extra_routers=[observability_router],
+    )
+
+
 def create_app_from_env() -> FastAPI:
-    """Factory de uvicorn. Sin puertos de P2/P3/P4, sus rutas responden 503."""
-    return create_app(load_settings())
+    """Factory de uvicorn."""
+    settings = load_settings()
+    return create_app(settings, control_integrations(settings))

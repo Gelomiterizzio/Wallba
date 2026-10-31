@@ -14,11 +14,20 @@ from wallba.contracts.tool_call import ToolCall
 
 Role = Literal["viewer", "operator", "approver", "policy_admin"]
 AuditEventType = Literal[
-    "demo_started",
-    "demo_completed",
+    "request_received",
+    "authorization_decided",
+    "approval_created",
+    "approval_approved",
+    "approval_rejected",
+    "approval_expired",
+    "approval_cancelled",
+    "execution_claimed",
     "execution_completed",
     "execution_failed",
     "execution_unknown",
+    "policy_activated",
+    "demo_started",
+    "demo_completed",
 ]
 
 
@@ -32,11 +41,22 @@ class AuditEventDraft(StrictModel):
     """Borrador sin secuencia ni hashes: los asigna el AuditSink de P4."""
 
     event_type: AuditEventType
-    run_id: str | None
-    principal_id: Identifier | None
+    run_id: str | None = None
+    principal_id: str | None = None
     request_id: str | None = None
     execution_id: str | None = None
     evidence_id: str | None = None
+    agent_id: str | None = None
+    environment_id: str | None = None
+    tool: str | None = None
+    resource_id: str | None = None
+    request_digest: str | None = None
+    decision: str | None = None
+    risk: str | None = None
+    policy_id: str | None = None
+    policy_version: int | None = None
+    reason_code: str | None = None
+    checksum: str | None = None
 
 
 class HarnessObservation(StrictModel):

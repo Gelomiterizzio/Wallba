@@ -221,6 +221,426 @@
         "title": "AgentSummary",
         "type": "object"
       },
+      "AuditEventDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "event": {
+            "$ref": "#/components/schemas/AuditEventView"
+          },
+          "integrity": {
+            "$ref": "#/components/schemas/IntegrityView"
+          }
+        },
+        "required": [
+          "event",
+          "integrity"
+        ],
+        "title": "AuditEventDetail",
+        "type": "object"
+      },
+      "AuditEventPage": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AuditEventView"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "title": "AuditEventPage",
+        "type": "object"
+      },
+      "AuditEventView": {
+        "additionalProperties": false,
+        "description": "Evento tal como se encadenó. Un campo opcional ausente nunca se rellena.",
+        "properties": {
+          "agent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Id"
+          },
+          "checksum": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checksum"
+          },
+          "decision": {
+            "anyOf": [
+              {
+                "enum": [
+                  "ALLOW",
+                  "DENY",
+                  "REQUIRE_APPROVAL"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decision"
+          },
+          "environment_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environment Id"
+          },
+          "event_hash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Event Hash",
+            "type": "string"
+          },
+          "event_id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "event_type": {
+            "enum": [
+              "request_received",
+              "authorization_decided",
+              "approval_created",
+              "approval_approved",
+              "approval_rejected",
+              "approval_expired",
+              "approval_cancelled",
+              "execution_claimed",
+              "execution_completed",
+              "execution_failed",
+              "execution_unknown",
+              "policy_activated",
+              "demo_started",
+              "demo_completed"
+            ],
+            "title": "Event Type",
+            "type": "string"
+          },
+          "evidence_id": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence Id"
+          },
+          "execution_id": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Id"
+          },
+          "occurred_at": {
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "policy_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Id"
+          },
+          "policy_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Version"
+          },
+          "previous_hash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Previous Hash",
+            "type": "string"
+          },
+          "principal_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Principal Id"
+          },
+          "reason_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason Code"
+          },
+          "request_digest": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Digest"
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id"
+          },
+          "resource_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resource Id"
+          },
+          "risk": {
+            "anyOf": [
+              {
+                "enum": [
+                  "LOW",
+                  "MEDIUM",
+                  "HIGH",
+                  "CRITICAL"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk"
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Id"
+          },
+          "schema_version": {
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "sequence": {
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "tool": {
+            "anyOf": [
+              {
+                "enum": [
+                  "file.read",
+                  "email.send",
+                  "record.delete",
+                  "db.query"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tool"
+          }
+        },
+        "required": [
+          "schema_version",
+          "event_id",
+          "sequence",
+          "event_type",
+          "occurred_at",
+          "previous_hash",
+          "event_hash"
+        ],
+        "title": "AuditEventView",
+        "type": "object"
+      },
+      "DashboardCounters": {
+        "additionalProperties": false,
+        "description": "Una denegación es una decisión, nunca una ejecución fallida.",
+        "properties": {
+          "approvals_pending": {
+            "title": "Approvals Pending",
+            "type": "integer"
+          },
+          "decisions": {
+            "title": "Decisions",
+            "type": "integer"
+          },
+          "events": {
+            "title": "Events",
+            "type": "integer"
+          },
+          "executions_completed": {
+            "title": "Executions Completed",
+            "type": "integer"
+          },
+          "executions_failed": {
+            "title": "Executions Failed",
+            "type": "integer"
+          },
+          "executions_unknown": {
+            "title": "Executions Unknown",
+            "type": "integer"
+          },
+          "requests": {
+            "title": "Requests",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "events",
+          "requests",
+          "decisions",
+          "executions_completed",
+          "executions_failed",
+          "executions_unknown",
+          "approvals_pending"
+        ],
+        "title": "DashboardCounters",
+        "type": "object"
+      },
+      "DashboardView": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "by_decision": {
+            "$ref": "#/components/schemas/DecisionCounts"
+          },
+          "by_risk": {
+            "$ref": "#/components/schemas/RiskCounts"
+          },
+          "counters": {
+            "$ref": "#/components/schemas/DashboardCounters"
+          },
+          "include_baseline": {
+            "title": "Include Baseline",
+            "type": "boolean"
+          },
+          "recent": {
+            "items": {
+              "$ref": "#/components/schemas/AuditEventView"
+            },
+            "title": "Recent",
+            "type": "array"
+          },
+          "window_from": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window From"
+          },
+          "window_to": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Window To"
+          }
+        },
+        "required": [
+          "as_of",
+          "window_from",
+          "window_to",
+          "include_baseline",
+          "counters",
+          "by_decision",
+          "by_risk",
+          "recent"
+        ],
+        "title": "DashboardView",
+        "type": "object"
+      },
       "DbQueryCall": {
         "additionalProperties": false,
         "properties": {
@@ -330,6 +750,28 @@
           "count"
         ],
         "title": "DbQueryResult",
+        "type": "object"
+      },
+      "DecisionCounts": {
+        "additionalProperties": false,
+        "properties": {
+          "ALLOW": {
+            "default": 0,
+            "title": "Allow",
+            "type": "integer"
+          },
+          "DENY": {
+            "default": 0,
+            "title": "Deny",
+            "type": "integer"
+          },
+          "REQUIRE_APPROVAL": {
+            "default": 0,
+            "title": "Require Approval",
+            "type": "integer"
+          }
+        },
+        "title": "DecisionCounts",
         "type": "object"
       },
       "DecisionEnvelope": {
@@ -1032,6 +1474,43 @@
         "title": "HealthReady",
         "type": "object"
       },
+      "IntegrityView": {
+        "additionalProperties": false,
+        "description": "Resultado de recalcular la cadena hasta este evento, con su límite explícito.",
+        "properties": {
+          "checked_events": {
+            "title": "Checked Events",
+            "type": "integer"
+          },
+          "first_invalid_sequence": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Invalid Sequence"
+          },
+          "limitation": {
+            "title": "Limitation",
+            "type": "string"
+          },
+          "verified": {
+            "title": "Verified",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "verified",
+          "checked_events",
+          "first_invalid_sequence",
+          "limitation"
+        ],
+        "title": "IntegrityView",
+        "type": "object"
+      },
       "MatrixRow": {
         "additionalProperties": false,
         "description": "Fila observada: solo existe si hubo un run persistido con evidencia.",
@@ -1509,6 +1988,33 @@
           "journal_count"
         ],
         "title": "ResourceSnapshot",
+        "type": "object"
+      },
+      "RiskCounts": {
+        "additionalProperties": false,
+        "properties": {
+          "CRITICAL": {
+            "default": 0,
+            "title": "Critical",
+            "type": "integer"
+          },
+          "HIGH": {
+            "default": 0,
+            "title": "High",
+            "type": "integer"
+          },
+          "LOW": {
+            "default": 0,
+            "title": "Low",
+            "type": "integer"
+          },
+          "MEDIUM": {
+            "default": 0,
+            "title": "Medium",
+            "type": "integer"
+          }
+        },
+        "title": "RiskCounts",
         "type": "object"
       },
       "ScenarioExpectation": {
@@ -2033,6 +2539,617 @@
         "summary": "Agents Detail",
         "tags": [
           "agents"
+        ]
+      }
+    },
+    "/api/v1/audit": {
+      "get": {
+        "operationId": "audit_index_api_v1_audit_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "tool",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "file.read",
+                    "email.send",
+                    "record.delete",
+                    "db.query"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tool"
+            }
+          },
+          {
+            "in": "query",
+            "name": "agent_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Agent Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "decision",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "ALLOW",
+                    "DENY",
+                    "REQUIRE_APPROVAL"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Decision"
+            }
+          },
+          {
+            "in": "query",
+            "name": "risk",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "LOW",
+                    "MEDIUM",
+                    "HIGH",
+                    "CRITICAL"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Risk"
+            }
+          },
+          {
+            "in": "query",
+            "name": "event_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "request_received",
+                    "authorization_decided",
+                    "approval_created",
+                    "approval_approved",
+                    "approval_rejected",
+                    "approval_expired",
+                    "approval_cancelled",
+                    "execution_claimed",
+                    "execution_completed",
+                    "execution_failed",
+                    "execution_unknown",
+                    "policy_activated",
+                    "demo_started",
+                    "demo_completed"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Event Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "request_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Request Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "run_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 256,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditEventPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Audit Index",
+        "tags": [
+          "observability"
+        ]
+      }
+    },
+    "/api/v1/audit/export": {
+      "get": {
+        "operationId": "audit_export_api_v1_audit_export_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "tool",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "file.read",
+                    "email.send",
+                    "record.delete",
+                    "db.query"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tool"
+            }
+          },
+          {
+            "in": "query",
+            "name": "agent_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Agent Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "decision",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "ALLOW",
+                    "DENY",
+                    "REQUIRE_APPROVAL"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Decision"
+            }
+          },
+          {
+            "in": "query",
+            "name": "risk",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "LOW",
+                    "MEDIUM",
+                    "HIGH",
+                    "CRITICAL"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Risk"
+            }
+          },
+          {
+            "in": "query",
+            "name": "event_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "request_received",
+                    "authorization_decided",
+                    "approval_created",
+                    "approval_approved",
+                    "approval_rejected",
+                    "approval_expired",
+                    "approval_cancelled",
+                    "execution_claimed",
+                    "execution_completed",
+                    "execution_failed",
+                    "execution_unknown",
+                    "policy_activated",
+                    "demo_started",
+                    "demo_completed"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Event Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "request_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Request Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "run_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "title": "From",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "title": "To",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "title": "Cursor",
+              "type": "null"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "title": "Limit",
+              "type": "null"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Audit Export",
+        "tags": [
+          "observability"
+        ]
+      }
+    },
+    "/api/v1/audit/{event_id}": {
+      "get": {
+        "operationId": "audit_detail_api_v1_audit__event_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "event_id",
+            "required": true,
+            "schema": {
+              "title": "Event Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditEventDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Audit Detail",
+        "tags": [
+          "observability"
+        ]
+      }
+    },
+    "/api/v1/dashboard": {
+      "get": {
+        "operationId": "dashboard_view_api_v1_dashboard_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_baseline",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Baseline",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Dashboard View",
+        "tags": [
+          "observability"
         ]
       }
     },
