@@ -54,10 +54,17 @@ class GatewayService:
     def _event(self, connection, event_type, row=None, *, principal_id=None, **payload):
         event = {"event_type": event_type, "occurred_at": stamp(self._now()), **payload}
         if row is not None:
+            canonical = row["canonical_json"]
+            call = canonical["call"]
             event.update(
                 request_id=row["request_id"],
                 run_id=row["demo_run_id"],
                 request_digest=row["request_digest"],
+                # Sin esto la auditoría no se puede filtrar por herramienta, agente o entorno.
+                agent_id=call["agent_id"],
+                tool=call["tool"],
+                resource_id=call["resource_id"],
+                environment_id=canonical["environment_id"],
             )
             event["principal_id"] = principal_id or row["principal_id"]
         elif principal_id:

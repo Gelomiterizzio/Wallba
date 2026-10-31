@@ -5,6 +5,7 @@
 !backend/uv.lock
 !backend/alembic/
 !backend/wallba/
+!policies/
 !frontend/
 !infra/nginx.conf
 **/__pycache__/

@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import { ErrorPanel } from "../components/states"
 import { AgentDetails } from "../features/agents/AgentDetails"
 import { AgentsPage } from "../features/agents/AgentsPage"
-import { ApprovalsPlaceholder } from "../features/approvals-route/ApprovalsPlaceholder"
+import { ApprovalCenter } from "../features/approvals"
 import { AttackMatrixPage } from "../features/attack-matrix/AttackMatrixPage"
 import { AuditEventPage } from "../features/audit/AuditEventPage"
 import { AuditPage } from "../features/audit/AuditPage"
@@ -40,7 +40,7 @@ export function AppRoutes() {
         <Route path="agents/:agentId" element={<AgentDetails />} />
         <Route path="policies" element={<PolicyListRoute />} />
         <Route path="policies/:policyId/edit" element={<PolicyEditorRoute />} />
-        <Route path="approvals" element={<ApprovalsPlaceholder />} />
+        <Route path="approvals" element={<ApprovalCenter />} />
         <Route path="audit" element={<AuditPage />} />
         <Route path="audit/:eventId" element={<AuditEventPage />} />
         <Route path="playground" element={<PlaygroundPage />} />

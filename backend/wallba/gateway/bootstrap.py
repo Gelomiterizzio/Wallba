@@ -16,6 +16,7 @@ from wallba.auth.clock import SystemClock
 from wallba.auth.http_handlers import build_fastapi_router
 from wallba.auth.integration import HumanAuthorizer, create_auth
 from wallba.auth.service import AuthSettings
+from wallba.demo.control_plane import ControlPlaneHarness
 from wallba.foundation.app import create_app as create_foundation_app
 from wallba.foundation.config import load_settings
 from wallba.foundation.database import create_sqlite_engine, run_migrations
@@ -26,6 +27,9 @@ from wallba.gateway.executor_client import HttpExecutorClient
 from wallba.gateway.harness import Person3Harness
 from wallba.gateway.routes import build_router
 from wallba.gateway.service import GatewayService
+from wallba.observability.adapters import AuditFanout, PolicyAuditSink
+from wallba.observability.router import router as observability_router
+from wallba.observability.writer import AuditWriter
 from wallba.policy.repository import SqlitePolicyRepository
 from wallba.policy.routes import PolicyActor, PolicyHttpError, create_policy_router
 from wallba.policy.service import PolicyService
@@ -47,7 +51,7 @@ def create_app(
     engine = create_sqlite_engine(settings.control_db_path)
     policy_repository = SqlitePolicyRepository(settings.control_db_path)
     clock = clock or SystemClock()
-    audit = audit or TransactionalOutbox()
+    audit = audit or AuditFanout(TransactionalOutbox(), AuditWriter())
     if settings.capability_secret is None or settings.capability_key_id is None:
         raise ValueError("P3 requiere clave de capacidad y key_id")
     executor = executor or HttpExecutorClient(
@@ -72,7 +76,7 @@ def create_app(
         environment_id=settings.environment_id,
     )
     approvals = ApprovalService(gateway)
-    policy_service = PolicyService(policy_repository, clock, audit)
+    policy_service = PolicyService(policy_repository, clock, PolicyAuditSink(audit))
 
     def policy_actor():
         request = _request_context.get()
@@ -98,13 +102,14 @@ def create_app(
         authorizer=authorizer,
         gateway=gateway,
         audit=audit,
-        harness=Person3Harness(gateway, approvals),
+        harness=ControlPlaneHarness(Person3Harness(gateway, approvals), policy_service),
         policy_ready=policy_ready,
         extra_routers=[
             build_fastapi_router(auth),
             build_router(gateway, authorizer),
             approval_router(approvals, authorizer),
             create_policy_router(policy_service, policy_actor),
+            observability_router,
         ],
     )
     app = create_foundation_app(settings, integrations, protected_env, baseline_env)
