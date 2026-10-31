@@ -43,8 +43,21 @@ for (const viewport of VIEWPORTS) {
         await gotoReady(page, route.path, route.heading)
         await expect(page.getByText("DATOS DE EJEMPLO").first()).toBeVisible()
 
-        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
-        expect(overflow, "la página no debe desplazarse en horizontal").toBeLessThanOrEqual(0)
+        const overflow = await page.evaluate(() => {
+          const limit = window.innerWidth
+          // Lo de dentro de una tabla con scroll propio no desplaza la página.
+          const offenders = [...document.querySelectorAll("body *")]
+            .filter((element) => !element.closest(".table-scroll"))
+            .map((element) => ({ element, right: element.getBoundingClientRect().right }))
+            .filter(({ right }) => right > limit + 0.5)
+            .slice(0, 8)
+            .map(({ element, right }) => `${element.tagName}.${element.className}#${element.id} → ${Math.round(right)}px`)
+          return { excess: document.documentElement.scrollWidth - limit, offenders }
+        })
+        expect(
+          overflow.excess,
+          `la página no debe desplazarse en horizontal; elementos: ${overflow.offenders.join(", ") || "ninguno fuera de tablas"}`,
+        ).toBeLessThanOrEqual(0)
 
         const results = await new AxeBuilder({ page }).analyze()
         const serious = results.violations.filter((item) => item.impact === "critical" || item.impact === "serious")
