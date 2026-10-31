@@ -1,0 +1,12 @@
+{
+  "request_id": "33333333-3333-4333-8333-333333333333",
+  "agent_id": "demo-agent",
+  "tool": "db.query",
+  "operation": "query",
+  "resource_id": "query:demo-records",
+  "parameters": {
+    "query_id": "list_records",
+    "limit": 10,
+    "sql": "SELECT * FROM demo_records"
+  }
+}
