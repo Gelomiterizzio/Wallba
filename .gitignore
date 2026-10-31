@@ -9,6 +9,8 @@ __pycache__/
 # Node
 node_modules/
 frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
 
 # Datos locales: bases, sandboxes, manifests y outbox nunca se versionan
 *.sqlite
@@ -21,4 +23,6 @@ evidence/
 .env
 .env.*
 !.env.example
+# Solo activa los datos de ejemplo en `vite --mode mock`; no contiene secretos.
+!frontend/.env.mock
 secrets/

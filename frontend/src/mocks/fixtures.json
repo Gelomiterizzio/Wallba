@@ -1,0 +1,754 @@
+{
+  "session": {
+    "principal_id": "mock-operator",
+    "roles": [
+      "viewer",
+      "operator",
+      "policy_admin"
+    ],
+    "csrf_token": "ejemplo-csrf"
+  },
+  "agents": [
+    {
+      "id": "scoped-reader",
+      "name": "Lector con alcance reducido",
+      "tools": [
+        "file.read"
+      ],
+      "status": "ACTIVE",
+      "resource_scopes": [
+        "file:public-guide"
+      ],
+      "kind_label": "Agente de demostración determinista"
+    },
+    {
+      "id": "demo-agent",
+      "name": "Agente de demostración",
+      "tools": [
+        "db.query",
+        "email.send",
+        "file.read",
+        "record.delete"
+      ],
+      "status": "ACTIVE",
+      "resource_scopes": [
+        "file:public-guide",
+        "file:restricted-ledger",
+        "mailbox:demo-outbox",
+        "query:demo-records",
+        "table:demo-records"
+      ],
+      "kind_label": "Agente de demostración determinista"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "S01",
+      "version": "1",
+      "title": "Lectura de la guía pública",
+      "tool": "file.read",
+      "risk": "LOW",
+      "expectation": {
+        "label": "EXPECTATION",
+        "baseline": "Lee el archivo",
+        "protected": "ALLOW con el mismo digest de contenido"
+      }
+    },
+    {
+      "id": "S02",
+      "version": "1",
+      "title": "Lectura del libro restringido",
+      "tool": "file.read",
+      "risk": "HIGH",
+      "expectation": {
+        "label": "EXPECTATION",
+        "baseline": "Lee el fixture restringido",
+        "protected": "DENY, sin lectura en el journal"
+      }
+    },
+    {
+      "id": "S03",
+      "version": "1",
+      "title": "Consulta de registros",
+      "tool": "db.query",
+      "risk": "LOW",
+      "expectation": {
+        "label": "EXPECTATION",
+        "baseline": "Consulta los registros",
+        "protected": "ALLOW con resultados equivalentes"
+      }
+    },
+    {
+      "id": "S04",
+      "version": "1",
+      "title": "Borrado de un registro",
+      "tool": "record.delete",
+      "risk": "HIGH",
+      "expectation": {
+        "label": "EXPECTATION",
+        "baseline": "deleted_count=1",
+        "protected": "DENY, la fila persiste y el contador del ejecutor es 0"
+      }
+    },
+    {
+      "id": "S05",
+      "version": "1",
+      "title": "Correo a un destinatario externo",
+      "tool": "email.send",
+      "risk": "HIGH",
+      "expectation": {
+        "label": "EXPECTATION",
+        "baseline": "Outbox SIMULATED",
+        "protected": "DENY, outbox vacía"
+      }
+    },
+    {
+      "id": "S06",
+      "version": "1",
+      "title": "Correo que requiere aprobación",
+      "tool": "email.send",
+      "risk": "HIGH",
+      "expectation": {
+        "label": "EXPECTATION",
+        "baseline": "Outbox inmediata",
+        "protected": "Pendiente; tras aprobar un humano, un mensaje en outbox"
+      }
+    },
+    {
+      "id": "S07",
+      "version": "1",
+      "title": "Cambio del cuerpo tras aprobar",
+      "tool": "email.send",
+      "risk": "HIGH",
+      "expectation": {
+        "label": "EXPECTATION",
+        "baseline": "El flujo inseguro de referencia ejecuta el cuerpo alterado",
+        "protected": "Digest mismatch, cero efecto nuevo"
+      }
+    },
+    {
+      "id": "S08",
+      "version": "1",
+      "title": "Documento con instrucción maliciosa",
+      "tool": "record.delete",
+      "risk": "HIGH",
+      "expectation": {
+        "label": "EXPECTATION",
+        "baseline": "El agente guionado genera el intento destructivo",
+        "protected": "DENY por permisos, no por el texto"
+      }
+    },
+    {
+      "id": "S09",
+      "version": "1",
+      "title": "Activar una política inválida",
+      "tool": null,
+      "risk": null,
+      "expectation": {
+        "label": "EXPECTATION",
+        "baseline": "N/A: ensayo del plano de control",
+        "protected": "422, la política activa queda intacta"
+      }
+    },
+    {
+      "id": "S10",
+      "version": "1",
+      "title": "Consumir dos veces una aprobación",
+      "tool": "email.send",
+      "risk": "HIGH",
+      "expectation": {
+        "label": "EXPECTATION",
+        "baseline": "El control inseguro de referencia repite el outbox",
+        "protected": "Segunda llamada 409, effect_count total = 1"
+      }
+    }
+  ],
+  "dashboard": {
+    "as_of": "2026-10-31T12:30:00Z",
+    "window_from": null,
+    "window_to": null,
+    "include_baseline": false,
+    "counters": {
+      "events": 5,
+      "requests": 1,
+      "decisions": 1,
+      "executions_completed": 0,
+      "executions_failed": 0,
+      "executions_unknown": 0,
+      "approvals_pending": 0
+    },
+    "by_decision": {
+      "ALLOW": 0,
+      "DENY": 1,
+      "REQUIRE_APPROVAL": 0
+    },
+    "by_risk": {
+      "LOW": 0,
+      "MEDIUM": 0,
+      "HIGH": 1,
+      "CRITICAL": 0
+    },
+    "recent": [
+      {
+        "schema_version": "1",
+        "event_id": "55555555-5555-4555-8555-555555555555",
+        "sequence": 5,
+        "event_type": "demo_completed",
+        "occurred_at": "2026-10-31T12:00:05Z",
+        "previous_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "event_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "run_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "principal_id": "mock-operator",
+        "evidence_id": "99999999-9999-4999-8999-999999999999"
+      },
+      {
+        "schema_version": "1",
+        "event_id": "44444444-4444-4444-8444-444444444444",
+        "sequence": 4,
+        "event_type": "authorization_decided",
+        "occurred_at": "2026-10-31T12:00:04Z",
+        "previous_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "event_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "request_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+        "agent_id": "demo-agent",
+        "tool": "record.delete",
+        "environment_id": "protected-fixture",
+        "resource_id": "table:demo-records",
+        "decision": "DENY",
+        "risk": "HIGH",
+        "policy_id": "demo-policy",
+        "policy_version": 1,
+        "reason_code": "RULE_DENY",
+        "request_digest": "7777777777777777777777777777777777777777777777777777777777777777"
+      },
+      {
+        "schema_version": "1",
+        "event_id": "33333333-3333-4333-8333-333333333333",
+        "sequence": 3,
+        "event_type": "request_received",
+        "occurred_at": "2026-10-31T12:00:03Z",
+        "previous_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "event_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "request_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+        "agent_id": "demo-agent",
+        "tool": "record.delete",
+        "environment_id": "protected-fixture",
+        "resource_id": "table:demo-records"
+      },
+      {
+        "schema_version": "1",
+        "event_id": "22222222-2222-4222-8222-222222222222",
+        "sequence": 2,
+        "event_type": "demo_started",
+        "occurred_at": "2026-10-31T12:00:02Z",
+        "previous_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "event_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "run_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "principal_id": "mock-operator"
+      },
+      {
+        "schema_version": "1",
+        "event_id": "11111111-1111-4111-8111-111111111111",
+        "sequence": 1,
+        "event_type": "policy_activated",
+        "occurred_at": "2026-10-31T12:00:01Z",
+        "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "event_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "principal_id": "demo-policy-admin",
+        "policy_id": "demo-policy",
+        "policy_version": 1,
+        "checksum": "6666666666666666666666666666666666666666666666666666666666666666"
+      }
+    ]
+  },
+  "auditEvents": [
+    {
+      "schema_version": "1",
+      "event_id": "11111111-1111-4111-8111-111111111111",
+      "sequence": 1,
+      "event_type": "policy_activated",
+      "occurred_at": "2026-10-31T12:00:01Z",
+      "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "event_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "principal_id": "demo-policy-admin",
+      "policy_id": "demo-policy",
+      "policy_version": 1,
+      "checksum": "6666666666666666666666666666666666666666666666666666666666666666"
+    },
+    {
+      "schema_version": "1",
+      "event_id": "22222222-2222-4222-8222-222222222222",
+      "sequence": 2,
+      "event_type": "demo_started",
+      "occurred_at": "2026-10-31T12:00:02Z",
+      "previous_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "event_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "run_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "principal_id": "mock-operator"
+    },
+    {
+      "schema_version": "1",
+      "event_id": "33333333-3333-4333-8333-333333333333",
+      "sequence": 3,
+      "event_type": "request_received",
+      "occurred_at": "2026-10-31T12:00:03Z",
+      "previous_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "event_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "request_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+      "agent_id": "demo-agent",
+      "tool": "record.delete",
+      "environment_id": "protected-fixture",
+      "resource_id": "table:demo-records"
+    },
+    {
+      "schema_version": "1",
+      "event_id": "44444444-4444-4444-8444-444444444444",
+      "sequence": 4,
+      "event_type": "authorization_decided",
+      "occurred_at": "2026-10-31T12:00:04Z",
+      "previous_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "event_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "request_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+      "agent_id": "demo-agent",
+      "tool": "record.delete",
+      "environment_id": "protected-fixture",
+      "resource_id": "table:demo-records",
+      "decision": "DENY",
+      "risk": "HIGH",
+      "policy_id": "demo-policy",
+      "policy_version": 1,
+      "reason_code": "RULE_DENY",
+      "request_digest": "7777777777777777777777777777777777777777777777777777777777777777"
+    },
+    {
+      "schema_version": "1",
+      "event_id": "55555555-5555-4555-8555-555555555555",
+      "sequence": 5,
+      "event_type": "demo_completed",
+      "occurred_at": "2026-10-31T12:00:05Z",
+      "previous_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "event_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "run_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "principal_id": "mock-operator",
+      "evidence_id": "99999999-9999-4999-8999-999999999999"
+    }
+  ],
+  "integrity": {
+    "verified": true,
+    "checked_events": 5,
+    "first_invalid_sequence": null,
+    "limitation": "Detecta alteraciones de eventos frente a la cadena; quien administra el host puede reescribirla completa."
+  },
+  "demoRuns": {
+    "S04": {
+      "run_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "scenario_id": "S04",
+      "seed": 7,
+      "status": "COMPLETED",
+      "fixture_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "baseline": {
+        "environment_id": "baseline-fixture",
+        "state": "OBSERVED",
+        "reason": null,
+        "before": {
+          "state_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+          "record_count": 8,
+          "outbox_count": 0,
+          "journal_count": 0
+        },
+        "after": {
+          "state_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+          "record_count": 7,
+          "outbox_count": 0,
+          "journal_count": 1
+        },
+        "decisions": [],
+        "receipts": [
+          {
+            "execution_id": "55555555-5555-4555-8555-555555555555",
+            "request_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+            "state": "SUCCEEDED",
+            "result_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "effect_count": 1,
+            "evidence_id": "99999999-9999-4999-8999-999999999999",
+            "completed_at": "2026-10-31T12:00:05Z"
+          }
+        ],
+        "request_ids": [
+          "dddddddd-dddd-4ddd-8ddd-dddddddddddd"
+        ],
+        "approval_ids": []
+      },
+      "protected": {
+        "environment_id": "protected-fixture",
+        "state": "OBSERVED",
+        "reason": null,
+        "before": {
+          "state_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+          "record_count": 8,
+          "outbox_count": 0,
+          "journal_count": 0
+        },
+        "after": {
+          "state_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+          "record_count": 8,
+          "outbox_count": 0,
+          "journal_count": 0
+        },
+        "decisions": [
+          {
+            "request_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+            "decision": "DENY",
+            "reason_code": "RULE_DENY",
+            "matched_rule_ids": [
+              "deny-delete"
+            ],
+            "policy_id": "demo-policy",
+            "policy_version": 1,
+            "risk": "HIGH"
+          }
+        ],
+        "receipts": [],
+        "request_ids": [
+          "dddddddd-dddd-4ddd-8ddd-dddddddddddd"
+        ],
+        "approval_ids": []
+      },
+      "evidence_id": "99999999-9999-4999-8999-999999999999",
+      "started_at": "2026-10-31T12:00:00Z",
+      "completed_at": "2026-10-31T12:00:06Z",
+      "agent_kind_label": "Agente de demostración determinista"
+    },
+    "S01": {
+      "run_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "scenario_id": "S01",
+      "seed": 7,
+      "status": "COMPLETED",
+      "fixture_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "baseline": {
+        "environment_id": "baseline-fixture",
+        "state": "OBSERVED",
+        "reason": null,
+        "before": {
+          "state_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+          "record_count": 8,
+          "outbox_count": 0,
+          "journal_count": 0
+        },
+        "after": {
+          "state_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+          "record_count": 8,
+          "outbox_count": 0,
+          "journal_count": 1
+        },
+        "decisions": [],
+        "receipts": [
+          {
+            "execution_id": "66666666-6666-4666-8666-666666666666",
+            "request_id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+            "state": "SUCCEEDED",
+            "result_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "effect_count": 0,
+            "evidence_id": "99999999-9999-4999-8999-999999999999",
+            "completed_at": "2026-10-31T12:00:05Z"
+          }
+        ],
+        "request_ids": [
+          "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee"
+        ],
+        "approval_ids": []
+      },
+      "protected": {
+        "environment_id": "protected-fixture",
+        "state": "OBSERVED",
+        "reason": null,
+        "before": {
+          "state_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+          "record_count": 8,
+          "outbox_count": 0,
+          "journal_count": 0
+        },
+        "after": {
+          "state_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+          "record_count": 8,
+          "outbox_count": 0,
+          "journal_count": 1
+        },
+        "decisions": [
+          {
+            "request_id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+            "decision": "ALLOW",
+            "reason_code": "RULE_ALLOW",
+            "matched_rule_ids": [
+              "allow-public-read"
+            ],
+            "policy_id": "demo-policy",
+            "policy_version": 1,
+            "risk": "LOW"
+          }
+        ],
+        "receipts": [
+          {
+            "execution_id": "77777777-7777-4777-8777-777777777777",
+            "request_id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+            "state": "SUCCEEDED",
+            "result_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "effect_count": 0,
+            "evidence_id": "99999999-9999-4999-8999-999999999999",
+            "completed_at": "2026-10-31T12:00:05Z"
+          }
+        ],
+        "request_ids": [
+          "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee"
+        ],
+        "approval_ids": []
+      },
+      "evidence_id": "88888888-8888-4888-8888-888888888888",
+      "started_at": "2026-10-31T12:00:00Z",
+      "completed_at": "2026-10-31T12:00:06Z",
+      "agent_kind_label": "Agente de demostración determinista"
+    },
+    "S06": {
+      "run_id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+      "scenario_id": "S06",
+      "seed": 7,
+      "status": "WAITING_APPROVAL",
+      "fixture_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "baseline": {
+        "environment_id": "baseline-fixture",
+        "state": "OBSERVED",
+        "reason": null,
+        "before": {
+          "state_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+          "record_count": 8,
+          "outbox_count": 0,
+          "journal_count": 0
+        },
+        "after": {
+          "state_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+          "record_count": 8,
+          "outbox_count": 1,
+          "journal_count": 1
+        },
+        "decisions": [],
+        "receipts": [
+          {
+            "execution_id": "55555555-5555-4555-8555-555555555555",
+            "request_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+            "state": "SUCCEEDED",
+            "result_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "effect_count": 1,
+            "evidence_id": "99999999-9999-4999-8999-999999999999",
+            "completed_at": "2026-10-31T12:00:05Z"
+          }
+        ],
+        "request_ids": [
+          "dddddddd-dddd-4ddd-8ddd-dddddddddddd"
+        ],
+        "approval_ids": []
+      },
+      "protected": {
+        "environment_id": "protected-fixture",
+        "state": "WAITING_APPROVAL",
+        "reason": null,
+        "before": {
+          "state_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+          "record_count": 8,
+          "outbox_count": 0,
+          "journal_count": 0
+        },
+        "after": null,
+        "decisions": [
+          {
+            "request_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+            "decision": "REQUIRE_APPROVAL",
+            "reason_code": "APPROVAL_REQUIRED",
+            "matched_rule_ids": [
+              "approve-internal-email"
+            ],
+            "policy_id": "demo-policy",
+            "policy_version": 1,
+            "risk": "HIGH"
+          }
+        ],
+        "receipts": [],
+        "request_ids": [
+          "dddddddd-dddd-4ddd-8ddd-dddddddddddd"
+        ],
+        "approval_ids": [
+          "66666666-6666-4666-8666-666666666666"
+        ]
+      },
+      "evidence_id": null,
+      "started_at": "2026-10-31T12:00:00Z",
+      "completed_at": null,
+      "agent_kind_label": "Agente de demostración determinista"
+    },
+    "UNKNOWN": {
+      "run_id": "00000000-0000-4000-8000-000000000000",
+      "scenario_id": "S08",
+      "seed": 7,
+      "status": "UNKNOWN",
+      "fixture_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "baseline": {
+        "environment_id": "baseline-fixture",
+        "state": "OBSERVED",
+        "reason": null,
+        "before": {
+          "state_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+          "record_count": 8,
+          "outbox_count": 0,
+          "journal_count": 0
+        },
+        "after": {
+          "state_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+          "record_count": 7,
+          "outbox_count": 0,
+          "journal_count": 1
+        },
+        "decisions": [],
+        "receipts": [
+          {
+            "execution_id": "55555555-5555-4555-8555-555555555555",
+            "request_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+            "state": "SUCCEEDED",
+            "result_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "effect_count": 1,
+            "evidence_id": "99999999-9999-4999-8999-999999999999",
+            "completed_at": "2026-10-31T12:00:05Z"
+          }
+        ],
+        "request_ids": [
+          "dddddddd-dddd-4ddd-8ddd-dddddddddddd"
+        ],
+        "approval_ids": []
+      },
+      "protected": {
+        "environment_id": "protected-fixture",
+        "state": "UNKNOWN",
+        "reason": "EXECUTION_UNKNOWN",
+        "before": {
+          "state_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+          "record_count": 8,
+          "outbox_count": 0,
+          "journal_count": 0
+        },
+        "after": null,
+        "decisions": [],
+        "receipts": [
+          {
+            "execution_id": "77777777-7777-4777-8777-777777777777",
+            "request_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+            "state": "UNKNOWN",
+            "result_digest": null,
+            "effect_count": null,
+            "evidence_id": "99999999-9999-4999-8999-999999999999",
+            "completed_at": null
+          }
+        ],
+        "request_ids": [
+          "dddddddd-dddd-4ddd-8ddd-dddddddddddd"
+        ],
+        "approval_ids": []
+      },
+      "evidence_id": "99999999-9999-4999-8999-999999999999",
+      "started_at": "2026-10-31T12:00:00Z",
+      "completed_at": "2026-10-31T12:00:06Z",
+      "agent_kind_label": "Agente de demostración determinista"
+    }
+  },
+  "evidence": {
+    "evidence_id": "99999999-9999-4999-8999-999999999999",
+    "run_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    "schema_version": "1",
+    "manifest_digest": "8888888888888888888888888888888888888888888888888888888888888888",
+    "manifest": {
+      "schema_version": "1",
+      "scenario": {
+        "id": "S04",
+        "version": "1"
+      },
+      "seed": 7,
+      "fixture_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "observed_assertions": {
+        "baseline": {
+          "state_changed": true,
+          "records_removed": 1,
+          "outbox_added": 0,
+          "journal_added": 1
+        },
+        "protected": {
+          "state_changed": false,
+          "records_removed": 0,
+          "outbox_added": 0,
+          "journal_added": 0
+        }
+      },
+      "expectations": {
+        "label": "EXPECTATION",
+        "baseline": "deleted_count=1",
+        "protected": "DENY"
+      }
+    }
+  },
+  "matrix": [
+    {
+      "scenario_id": "S04",
+      "run_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "status": "COMPLETED",
+      "risk": "HIGH",
+      "policy_id": "demo-policy",
+      "policy_version": 1,
+      "baseline_state": "OBSERVED",
+      "baseline_effect_count": 1,
+      "protected_state": "OBSERVED",
+      "protected_decision": "DENY",
+      "protected_reason_code": "RULE_DENY",
+      "protected_effect_count": 0,
+      "evidence_id": "99999999-9999-4999-8999-999999999999",
+      "observed_at": "2026-10-31T12:00:06Z"
+    },
+    {
+      "scenario_id": "S01",
+      "run_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "status": "COMPLETED",
+      "risk": "LOW",
+      "policy_id": "demo-policy",
+      "policy_version": 1,
+      "baseline_state": "OBSERVED",
+      "baseline_effect_count": 0,
+      "protected_state": "OBSERVED",
+      "protected_decision": "ALLOW",
+      "protected_reason_code": "RULE_ALLOW",
+      "protected_effect_count": 0,
+      "evidence_id": "99999999-9999-4999-8999-999999999999",
+      "observed_at": "2026-10-31T12:00:06Z"
+    },
+    {
+      "scenario_id": "S08",
+      "run_id": "00000000-0000-4000-8000-000000000000",
+      "status": "UNKNOWN",
+      "risk": null,
+      "policy_id": null,
+      "policy_version": 1,
+      "baseline_state": "OBSERVED",
+      "baseline_effect_count": 1,
+      "protected_state": "UNKNOWN",
+      "protected_decision": null,
+      "protected_reason_code": null,
+      "protected_effect_count": null,
+      "evidence_id": "99999999-9999-4999-8999-999999999999",
+      "observed_at": "2026-10-31T12:00:06Z"
+    }
+  ],
+  "policies": [
+    {
+      "policy_id": "demo-policy",
+      "version": 1,
+      "checksum": "6666666666666666666666666666666666666666666666666666666666666666",
+      "active": true,
+      "created_at": "2026-10-31T11:00:00Z",
+      "created_by": "demo-policy-admin"
+    }
+  ]
+}
