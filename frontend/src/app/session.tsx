@@ -78,7 +78,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(
     async (username: string, password: string) => {
-      setIdentity(await client.post<Session>("/auth/login", { username, password }))
+      // El login solo devuelve csrf_token y roles; la identidad completa sale de /auth/me.
+      await client.post("/auth/login", { username, password })
+      setIdentity(await client.get<Session>("/auth/me"))
     },
     [client, setIdentity],
   )

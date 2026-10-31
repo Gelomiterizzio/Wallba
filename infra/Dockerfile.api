@@ -10,7 +10,7 @@ RUN uv sync --frozen --no-dev --no-install-project
 
 COPY backend/alembic ./alembic
 COPY backend/wallba ./wallba
-COPY policies/demo.yaml /app/policies/demo.yaml
+COPY policies /app/policies
 
 RUN useradd --uid 10001 --no-create-home wallba \
     && mkdir -p /data && chown wallba /data

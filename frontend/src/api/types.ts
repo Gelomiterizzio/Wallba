@@ -20,12 +20,11 @@ export type Evidence = Schemas["EvidenceView"]
 export type MatrixRow = Schemas["MatrixRow"]
 export type MatrixPage = Schemas["Page_MatrixRow_"]
 
-/**
- * Identidad que devuelve GET /auth/me. P3 aún no publica este esquema:
- * API_CONTRACTS solo dice "identidad/roles/csrf_token", y estos nombres están por confirmar.
- */
+/** Identidad que devuelve GET /auth/me (wallba/auth/http_handlers.py). No hay esquema generado. */
 export type Session = {
   principal_id: string
+  username?: string
+  kind?: string
   roles: string[]
   csrf_token: string
 }

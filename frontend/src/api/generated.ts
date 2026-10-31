@@ -369,7 +369,7 @@ export interface components {
              * Event Type
              * @enum {string}
              */
-            event_type: "request_received" | "authorization_decided" | "approval_created" | "approval_approved" | "approval_rejected" | "approval_expired" | "approval_cancelled" | "execution_claimed" | "execution_completed" | "execution_failed" | "execution_unknown" | "policy_activated" | "demo_started" | "demo_completed";
+            event_type: "request_received" | "authorization_decided" | "approval_created" | "approval_approved" | "approval_rejected" | "approval_expired" | "approval_cancelled" | "approval_consumed" | "person3_s07_blocked" | "person3_s10_blocked" | "execution_claimed" | "execution_completed" | "execution_failed" | "execution_unknown" | "policy_activated" | "demo_started" | "demo_completed";
             /** Evidence Id */
             evidence_id?: string | null;
             /** Execution Id */
@@ -1172,7 +1172,7 @@ export interface operations {
                 agent_id?: string | null;
                 decision?: ("ALLOW" | "DENY" | "REQUIRE_APPROVAL") | null;
                 risk?: ("LOW" | "MEDIUM" | "HIGH" | "CRITICAL") | null;
-                event_type?: ("request_received" | "authorization_decided" | "approval_created" | "approval_approved" | "approval_rejected" | "approval_expired" | "approval_cancelled" | "execution_claimed" | "execution_completed" | "execution_failed" | "execution_unknown" | "policy_activated" | "demo_started" | "demo_completed") | null;
+                event_type?: ("request_received" | "authorization_decided" | "approval_created" | "approval_approved" | "approval_rejected" | "approval_expired" | "approval_cancelled" | "approval_consumed" | "person3_s07_blocked" | "person3_s10_blocked" | "execution_claimed" | "execution_completed" | "execution_failed" | "execution_unknown" | "policy_activated" | "demo_started" | "demo_completed") | null;
                 request_id?: string | null;
                 run_id?: string | null;
                 q?: string | null;
@@ -1214,7 +1214,7 @@ export interface operations {
                 agent_id?: string | null;
                 decision?: ("ALLOW" | "DENY" | "REQUIRE_APPROVAL") | null;
                 risk?: ("LOW" | "MEDIUM" | "HIGH" | "CRITICAL") | null;
-                event_type?: ("request_received" | "authorization_decided" | "approval_created" | "approval_approved" | "approval_rejected" | "approval_expired" | "approval_cancelled" | "execution_claimed" | "execution_completed" | "execution_failed" | "execution_unknown" | "policy_activated" | "demo_started" | "demo_completed") | null;
+                event_type?: ("request_received" | "authorization_decided" | "approval_created" | "approval_approved" | "approval_rejected" | "approval_expired" | "approval_cancelled" | "approval_consumed" | "person3_s07_blocked" | "person3_s10_blocked" | "execution_claimed" | "execution_completed" | "execution_failed" | "execution_unknown" | "policy_activated" | "demo_started" | "demo_completed") | null;
                 request_id?: string | null;
                 run_id?: string | null;
                 q?: string | null;

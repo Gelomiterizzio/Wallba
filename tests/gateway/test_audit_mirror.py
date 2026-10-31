@@ -4,13 +4,15 @@ from sqlalchemy import text
 
 from wallba.foundation.database import create_sqlite_engine, run_migrations, write_transaction
 from wallba.gateway.audit import TransactionalOutbox
+from wallba.observability.adapters import AuditFanout
+from wallba.observability.writer import AuditWriter
 
 
 def test_gateway_event_is_visible_to_the_dashboard_chain(tmp_path: Path):
     database = tmp_path / "control.sqlite"
     run_migrations(database)
     engine = create_sqlite_engine(database)
-    outbox = TransactionalOutbox()
+    outbox = AuditFanout(TransactionalOutbox(), AuditWriter())
     with write_transaction(engine) as connection:
         outbox.append(
             {

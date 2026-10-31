@@ -39,7 +39,7 @@ export function createHandlers(): HttpHandler[] {
     ),
     http.post(`${API}/auth/login`, () => {
       state.loggedIn = true
-      return HttpResponse.json(fixtures.session)
+      return HttpResponse.json({ csrf_token: fixtures.session.csrf_token, roles: fixtures.session.roles })
     }),
     http.post(`${API}/auth/logout`, () => {
       state.loggedIn = false
