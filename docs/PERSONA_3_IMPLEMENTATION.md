@@ -36,11 +36,10 @@ python -m ruff check backend/wallba/auth backend/wallba/gateway backend/wallba/a
 Resultado: 334 pruebas correctas y 15 omitidas; el chequeo de estilo de los
 archivos de Persona 3 no reporta errores.
 
-El harness de `tests/approvals/ui` pasó typecheck y 21 pruebas Vitest. Sus
-pruebas Chromium existen y ya se habían ejecutado contra tres anchos de
-viewport. La repetición final en esta máquina encontró puertos locales
-reservados por el entorno de ejecución; no se modificó el código de la UI para
-ocultarlo. Para repetirlo en una sesión sin esa reserva:
+El harness de `tests/approvals/ui` pasó typecheck y 21 pruebas Vitest. Las
+3 pruebas Chromium pasaron a 360, 768 y 1280 px al ejecutarse con acceso a
+puertos locales. La primera repetición dentro del sandbox no pudo abrir el
+puerto de Vite; esto no era un fallo de la interfaz. Para repetirlas:
 
 ```powershell
 Set-Location tests/approvals/ui
@@ -55,9 +54,12 @@ npm run test:browser
 ## Dependencias y frontera de equipos
 
 `argon2-cffi` es la dependencia de Persona 3 para el hasher de contraseñas.
-No se alteró el manifiesto o lock de Persona 1 para respetar la frontera de
-propiedad; al integrar esta rama, quien gestione el lock compartido debe fijar
-esa dependencia junto a las demás dependencias de producción.
+Se fijó en el manifiesto y lock compartidos para que la instalación congelada
+de CI y Docker funcione. El contenedor API arranca la fábrica de Persona 3,
+que incorpora la aplicación existente de Persona 1 y las políticas de Persona 2.
+La instalación limpia desde `uv.lock` pasó y, en ese entorno, la suite completa
+dio 334 pruebas correctas y 15 omitidas. No se pudo construir la imagen en esta
+máquina porque Docker no está instalado.
 
 Persona 4 todavía no terminó su dashboard, por lo que la integración visual
 final queda bloqueada externamente. El componente de Persona 3 y sus contratos
