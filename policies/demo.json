@@ -1,0 +1,50 @@
+{
+  "schema_version": "1",
+  "policy_id": "demo-policy",
+  "version": 1,
+  "rules": [
+    {
+      "id": "allow-public-read",
+      "effect": "ALLOW",
+      "agents": ["demo-agent"],
+      "tools": ["file.read"],
+      "resources": ["file:public-guide"],
+      "conditions": {
+        "context_environments": ["protected-fixture"],
+        "risk_at_most": "LOW"
+      }
+    },
+    {
+      "id": "deny-delete",
+      "effect": "DENY",
+      "agents": ["demo-agent"],
+      "tools": ["record.delete"],
+      "resources": ["table:demo-records"]
+    },
+    {
+      "id": "approve-internal-email",
+      "effect": "REQUIRE_APPROVAL",
+      "agents": ["demo-agent"],
+      "tools": ["email.send"],
+      "resources": ["mailbox:demo-outbox"],
+      "conditions": {
+        "parameters": {
+          "to": {
+            "in": ["reviewer@example.test"]
+          }
+        }
+      }
+    },
+    {
+      "id": "allow-demo-query",
+      "effect": "ALLOW",
+      "agents": ["demo-agent"],
+      "tools": ["db.query"],
+      "resources": ["query:demo-records"],
+      "conditions": {
+        "context_environments": ["protected-fixture"],
+        "risk_at_most": "LOW"
+      }
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+.policy-feature {
+  --policy-bg: #0b1120;
+  --policy-surface: #111c30;
+  --policy-border: #334155;
+  --policy-text: #f1f5f9;
+  --policy-muted: #cbd5e1;
+  --policy-accent: #22d3ee;
+  --policy-allow: #4ade80;
+  --policy-deny: #fca5a5;
+  --policy-approval: #fcd34d;
+  color: var(--policy-text);
+  background: var(--policy-bg);
+  font-family: system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  padding: 24px;
+  max-width: 1440px;
+}
+
+.policy-feature h1 {
+  font-size: 24px;
+  margin: 0 0 16px;
+}
+
+.policy-feature p,
+.policy-feature li {
+  color: var(--policy-muted);
+}
+
+.policy-feature table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.policy-feature th,
+.policy-feature td {
+  border-bottom: 1px solid var(--policy-border);
+  padding: 12px 8px;
+  text-align: left;
+}
+
+.policy-feature code,
+.policy-feature textarea {
+  font-family: ui-monospace, monospace;
+  font-size: 14px;
+}
+
+.policy-feature textarea {
+  width: 100%;
+  min-height: 280px;
+  color: var(--policy-text);
+  background: var(--policy-surface);
+  border: 1px solid var(--policy-border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.policy-feature button,
+.policy-feature select {
+  min-height: 44px;
+  margin: 0 8px 8px 0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--policy-border);
+  background: var(--policy-surface);
+  color: var(--policy-text);
+}
+
+.policy-feature button:disabled {
+  opacity: 0.55;
+}
+
+.policy-feature :focus-visible {
+  outline: 2px solid var(--policy-accent);
+  outline-offset: 2px;
+}
+
+.policy-feature .policy-error {
+  color: var(--policy-deny);
+}
+
+.policy-feature .policy-panel {
+  background: var(--policy-surface);
+  border: 1px solid var(--policy-border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.policy-feature .policy-example {
+  color: var(--policy-approval);
+  font-size: 12px;
+}
+
+@media (max-width: 767px) {
+  .policy-feature {
+    padding: 16px;
+  }
+
+  .policy-feature table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .policy-feature * {
+    transition: none;
+  }
+}
