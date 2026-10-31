@@ -12,6 +12,7 @@
   --deny: #fca5a5;
   --approval: #fcd34d;
   --unknown: #d8b4fe;
+  --on-accent: #0b1120;
 
   --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
@@ -34,6 +35,22 @@
   --sidebar: 240px;
   --header: 64px;
   --transition: 150ms;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --surface-raised: #e8eef6;
+  --border: #cbd5e1;
+  --text: #0f172a;
+  --text-muted: #334155;
+  --accent: #0f766e;
+  --on-accent: #f8fafc;
+  --allow: #166534;
+  --deny: #b91c1c;
+  --approval: #a16207;
+  --unknown: #6d28d9;
 }
 
 @media (prefers-reduced-motion: reduce) {

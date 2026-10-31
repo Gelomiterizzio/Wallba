@@ -16,6 +16,8 @@ from wallba.auth.clock import SystemClock
 from wallba.auth.http_handlers import build_fastapi_router
 from wallba.auth.integration import HumanAuthorizer, create_auth
 from wallba.auth.service import AuthSettings
+from wallba.demo.control_plane import ControlPlaneHarness
+from wallba.demo.seed_policy import ensure_demo_policy
 from wallba.foundation.app import create_app as create_foundation_app
 from wallba.foundation.config import load_settings
 from wallba.foundation.database import create_sqlite_engine, run_migrations
@@ -26,8 +28,13 @@ from wallba.gateway.executor_client import HttpExecutorClient
 from wallba.gateway.harness import Person3Harness
 from wallba.gateway.routes import build_router
 from wallba.gateway.service import GatewayService
+from wallba.observability.adapters import AuditFanout, PolicyAuditSink
+from wallba.observability.router import router as observability_router
+from wallba.observability.writer import AuditWriter
 from wallba.policy.repository import SqlitePolicyRepository
 from wallba.policy.routes import PolicyActor, PolicyHttpError, create_policy_router
+from wallba.guard.routes import create_guard_router
+from wallba.guard.runtime import GuardRuntime
 from wallba.policy.service import PolicyService
 
 _request_context = ContextVar("person3_request", default=None)
@@ -47,7 +54,7 @@ def create_app(
     engine = create_sqlite_engine(settings.control_db_path)
     policy_repository = SqlitePolicyRepository(settings.control_db_path)
     clock = clock or SystemClock()
-    audit = audit or TransactionalOutbox()
+    audit = audit or AuditFanout(TransactionalOutbox(), AuditWriter())
     if settings.capability_secret is None or settings.capability_key_id is None:
         raise ValueError("P3 requiere clave de capacidad y key_id")
     executor = executor or HttpExecutorClient(
@@ -72,7 +79,10 @@ def create_app(
         environment_id=settings.environment_id,
     )
     approvals = ApprovalService(gateway)
-    policy_service = PolicyService(policy_repository, clock, audit)
+    policy_service = PolicyService(policy_repository, clock, PolicyAuditSink(audit))
+    if settings.data_dir is None:
+        raise ValueError("el guardia requiere WALLBA_DATA_DIR")
+    guard = GuardRuntime(settings.data_dir / "guard" / "guard.sqlite", settings.data_dir / "guard")
 
     def policy_actor():
         request = _request_context.get()
@@ -98,13 +108,15 @@ def create_app(
         authorizer=authorizer,
         gateway=gateway,
         audit=audit,
-        harness=Person3Harness(gateway, approvals),
+        harness=ControlPlaneHarness(Person3Harness(gateway, approvals), policy_service),
         policy_ready=policy_ready,
         extra_routers=[
             build_fastapi_router(auth),
             build_router(gateway, authorizer),
             approval_router(approvals, authorizer),
             create_policy_router(policy_service, policy_actor),
+            create_guard_router(guard, authorizer),
+            observability_router,
         ],
     )
     app = create_foundation_app(settings, integrations, protected_env, baseline_env)
@@ -113,6 +125,7 @@ def create_app(
     app.state.person3_auth = auth
     app.state.person3_engine = engine
     app.state.person3_policy = policy_service
+    app.state.guard = guard
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[settings.allowed_origin],
@@ -154,6 +167,7 @@ def create_app(
         try:
             async with original_lifespan(application):
                 gateway.recover()
+                ensure_demo_policy(settings.control_db_path, audit, settings.demo_enabled)
                 yield
         finally:
             if hasattr(executor, "close"):

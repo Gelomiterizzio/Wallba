@@ -12,12 +12,21 @@ const NAVIGATION = [
   { to: "/audit", label: "Auditoría" },
   { to: "/playground", label: "Playground" },
   { to: "/matrix", label: "Matriz de ataques" },
+  { to: "/protection", label: "Protección" },
+  { to: "/alerts", label: "Alertas" },
 ]
 
 export function AppShell() {
   const { session, logout } = useSession()
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [theme, setTheme] = useState<"dark" | "light">(() =>
+    window.localStorage.getItem("wallba-theme") === "light" ? "light" : "dark",
+  )
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    window.localStorage.setItem("wallba-theme", theme)
+  }, [theme])
   const mainRef = useRef<HTMLElement>(null)
   const previousPath = useRef(pathname)
 
@@ -46,6 +55,13 @@ export function AppShell() {
           Menú
         </button>
         <span className="brand">WALLBA</span>
+        <button
+          type="button"
+          className="button"
+          onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
+        >
+          {theme === "dark" ? "Usar tema claro" : "Usar tema oscuro"}
+        </button>
         <span className="environment-tag">DEMO AISLADA</span>
         <ExampleBanner />
         <div className="identity">

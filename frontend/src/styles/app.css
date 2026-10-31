@@ -226,7 +226,7 @@ a {
 .button-primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
   font-weight: 600;
 }
 
@@ -322,6 +322,8 @@ a {
 }
 
 .table-scroll {
+  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -387,7 +389,7 @@ td .badge {
 }
 
 .dialog {
-  max-width: min(560px, calc(100vw - 32px));
+  max-width: min(560px, calc(100% - 32px));
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
@@ -402,6 +404,8 @@ td .badge {
 /* Formularios */
 .field {
   display: grid;
+  /* minmax(0, ...): un control ancho, como datetime-local, no agranda la columna. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-1);
   min-width: 0;
 }
@@ -442,8 +446,9 @@ input[type="checkbox"] {
 .filter-grid {
   display: grid;
   gap: var(--space-3);
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
   margin-bottom: var(--space-3);
+  min-width: 0;
 }
 
 /* Dashboard */

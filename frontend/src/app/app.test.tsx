@@ -22,6 +22,8 @@ describe("shell y sesión", () => {
       "Auditoría",
       "Playground",
       "Matriz de ataques",
+      "Protección",
+      "Alertas",
     ])
     await user.click(within(nav).getByRole("link", { name: "Agentes" }))
     expect(await screen.findByRole("heading", { level: 1, name: "Agentes" })).toBeInTheDocument()
@@ -70,7 +72,8 @@ describe("shell y sesión", () => {
       http.post("*/api/v1/auth/login", () => {
         loggedIn = true
         identity = { principal_id: "otra-persona", roles: ["viewer"], csrf_token: "otro" }
-        return HttpResponse.json(identity)
+        // Igual que el servidor real: el login no devuelve la identidad.
+        return HttpResponse.json({ csrf_token: identity.csrf_token, roles: identity.roles })
       }),
       http.get("*/api/v1/agents", () => {
         requests.push(identity.principal_id)
@@ -141,10 +144,10 @@ describe("rutas de otros módulos", () => {
     expect(await screen.findByText("demo-policy", { exact: false })).toBeInTheDocument()
   })
 
-  it("aprobaciones no permite aprobar mientras el módulo de P3 no esté integrado", async () => {
-    renderApp(`/approvals?request_id=${"d".repeat(8)}`)
-    expect(await screen.findByText("Centro de aprobaciones aún no integrado")).toBeInTheDocument()
-    expect(screen.queryByRole("button", { name: /aprobar/i })).not.toBeInTheDocument()
+  it("monta el centro de aprobaciones de P3 sin datos inventados", async () => {
+    renderApp("/approvals")
+    expect(await screen.findByRole("heading", { level: 1, name: /Aprobaciones/ })).toBeInTheDocument()
+    expect(screen.queryByRole("button", { name: /^aprobar/i })).not.toBeInTheDocument()
   })
 
   it("una ruta inexistente mantiene la navegación", async () => {

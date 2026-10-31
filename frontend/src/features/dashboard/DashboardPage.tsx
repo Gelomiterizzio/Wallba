@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom"
 import type { AuditEvent } from "../../api/types"
 import { DecisionBadge, RiskBadge } from "../../components/badges"
 import { EmptyState, ErrorPanel, formatUtc, LoadingState, PageHeader, shortId, TableScroll } from "../../components/states"
+import { GuardSummary } from "../protection/GuardSummary"
 import { useDashboard, windowStart, WINDOWS, type WindowKey } from "./dashboardQueries"
 
 const DECISION_LABELS = { ALLOW: "Permitido", DENY: "Denegado", REQUIRE_APPROVAL: "Requiere aprobación" }
@@ -64,6 +65,7 @@ export function DashboardPage() {
           </label>
         </div>
       </PageHeader>
+      <GuardSummary />
 
       {query.isPending ? <LoadingState label="Cargando actividad" /> : null}
       {query.isError ? (

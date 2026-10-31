@@ -144,6 +144,38 @@ def test_tampered_row_is_not_served(tmp_path):
         assert exc.code == "AUTHORIZATION_UNAVAILABLE"
 
 
+def test_version_number_does_not_identify_another_policy(tmp_path):
+    repository = SqlitePolicyRepository(tmp_path / "policy.sqlite")
+    service = PolicyService(repository, FixedClock(), RecordingAudit())
+    service.create_version("demo-policy", _payload(1), "demo-policy-admin")
+    other = validate_mapping(policy_dict([deny_delete("deny-other")], version=1, policy_id="other-policy"))
+    assert other.document is not None
+    service.create_version("other-policy", canonical_bytes(other.document), "demo-policy-admin")
+    service.activate("demo-policy", 1, None, "demo-policy-admin")
+
+    try:
+        service.activate("other-policy", 1, 1, "demo-policy-admin")
+        raised = False
+    except PolicyConflict as exc:
+        raised = True
+        assert exc.code == "STALE_POLICY"
+    assert raised
+    active = service.get_active_snapshot()
+    assert active is not None
+    assert active.document.policy_id == "demo-policy"
+    assert active.document.version == 1
+
+    swapped = service.activate(
+        "other-policy",
+        1,
+        1,
+        "demo-policy-admin",
+        expected_active_policy_id="demo-policy",
+    )
+    assert swapped.document.policy_id == "other-policy"
+    assert swapped.document.version == 1
+
+
 def test_allow_rule_can_be_saved_for_catalog_resource():
     report = validate_mapping(
         policy_dict([rule("allow-read", "ALLOW", ["file.read"], ["file:public-guide"])])

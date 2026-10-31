@@ -149,12 +149,45 @@ def test_only_web_publishes_ports(stack: None) -> None:
     assert "127.0.0.1:8080" not in published.stdout
 
 
+# La imagen de API arranca con wallba.gateway.bootstrap (Persona 3), que instala
+# HumanAuthorizer. require_role solo responde 503 si ese puerto es None. Con el
+# autenticador real, una sesión ausente o falsificada se rechaza antes de
+# list_agents: 401 y un error, nunca el catálogo.
+CLOSED_AGENTS = """
+import json, urllib.request, urllib.error
+
+def attempt(cookie):
+    headers = {"Accept": "application/json"}
+    if cookie:
+        headers["Cookie"] = cookie
+    request = urllib.request.Request(
+        "http://127.0.0.1:8000/api/v1/agents", method="GET", headers=headers)
+    try:
+        response = urllib.request.urlopen(request, timeout=5)
+        status, raw = response.status, response.read()
+    except urllib.error.HTTPError as exc:
+        status, raw = exc.code, exc.read()
+    parsed = json.loads(raw.decode())
+    print(json.dumps({
+        "status": status,
+        "code": (parsed.get("error") or {}).get("code"),
+        "has_items": isinstance(parsed, dict) and "items" in parsed,
+    }, separators=(",", ":")))
+
+attempt(None)
+attempt("wallba_session=forged-session-token")
+"""
+
+
 def test_api_runs_without_ports_of_others_failing_closed(stack: None) -> None:
-    result = _in_service(
-        "api", "python", "-c", HTTP_STATUS.replace("data=b'{}',", "data=None,"),
-        "http://127.0.0.1:8000/api/v1/agents", "GET",
-    )
-    assert result.stdout.strip() == "503"
+    result = _in_service("api", "python", "-c", CLOSED_AGENTS)
+    assert result.returncode == 0, result.stderr
+    observed = [json.loads(line) for line in result.stdout.splitlines() if line.startswith("{")]
+    assert len(observed) == 2
+    for attempt in observed:
+        assert attempt["status"] == 401
+        assert attempt["code"] == "AUTHENTICATION_REQUIRED"
+        assert attempt["has_items"] is False
 
 
 REAL_EXECUTION_SCRIPT = """

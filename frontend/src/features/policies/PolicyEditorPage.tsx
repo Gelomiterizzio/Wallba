@@ -47,6 +47,9 @@ export function PolicyEditorPage({
   const [draft, setDraft] = useState<PolicyDraft>(() =>
     rememberActive(createDraft(policyId, initialDraft, initialFormat), activeVersion, activeChecksum),
   )
+  const [activePointer, setActivePointer] = useState<{ policyId: string; version: number } | null>(
+    activeVersion == null ? null : { policyId, version: activeVersion },
+  )
   const [activeRules, setActiveRules] = useState<unknown>(activeDocument)
   const [confirming, setConfirming] = useState(false)
   const [notice, setNotice] = useState<string | null>(null)
@@ -65,7 +68,13 @@ export function PolicyEditorPage({
     client
       .list()
       .then(async (page) => {
-        const active = page.items.find((item) => item.policy_id === policyId && item.active)
+        const globalActive = page.items.find((item) => item.active)
+        if (!cancelled) {
+          setActivePointer(
+            globalActive ? { policyId: globalActive.policy_id, version: globalActive.version } : null,
+          )
+        }
+        const active = globalActive?.policy_id === policyId ? globalActive : undefined
         if (!active || cancelled) {
           return
         }
@@ -136,7 +145,9 @@ export function PolicyEditorPage({
     setDraft((current) => markBusy(current))
     setConfirming(false)
     try {
-      const result = await client.activate(policyId, savedVersion, expected)
+      const expectedVersion = activePointer ? activePointer.version : expected
+      const result = await client.activate(policyId, savedVersion, expectedVersion, activePointer?.policyId ?? null)
+      setActivePointer({ policyId, version: result.version })
       setDraft((current) => activationAccepted(current, result.version, result.checksum))
       setNotice(`Versión ${result.version} activada.`)
     } catch (reason) {
@@ -162,11 +173,13 @@ export function PolicyEditorPage({
   async function refreshActive() {
     try {
       const page = await client.list()
-      const active = page.items.find((item) => item.policy_id === policyId && item.active)
+      const globalActive = page.items.find((item) => item.active)
+      setActivePointer(globalActive ? { policyId: globalActive.policy_id, version: globalActive.version } : null)
+      const active = globalActive?.policy_id === policyId ? globalActive : undefined
       if (!active) {
         setActiveRules(null)
         setDraft((current) => activationConflict(current, null, null))
-        setNotice("No hay una versión activa. No se reintentó la activación.")
+        setNotice("No hay una versión activa de esta política. No se reintentó la activación.")
         return
       }
       const detail = await client.getVersion(policyId, active.version)
