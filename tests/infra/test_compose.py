@@ -185,3 +185,10 @@ def test_ci_uses_pinned_actions_and_minimal_permissions() -> None:
     assert workflow["permissions"] == {"contents": "read"}
     for action in re.findall(r"uses: (\S+)", text):
         assert re.search(r"@[0-9a-f]{40}$", action), action
+
+
+def test_ci_does_not_use_hash_files_at_job_level() -> None:
+    # GitHub rechaza todo el workflow si hashFiles aparece en el `if` de un job.
+    workflow = yaml.safe_load((ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8"))
+    for name, job in workflow["jobs"].items():
+        assert "hashFiles" not in str(job.get("if", "")), name

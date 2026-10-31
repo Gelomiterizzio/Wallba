@@ -55,15 +55,21 @@ jobs:
 
   frontend:
     runs-on: ubuntu-latest
-    # El paquete lo crea P4; hasta entonces este job no se ejecuta y no cuenta como superado.
-    if: ${{ hashFiles('frontend/package-lock.json') != '' }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      # El paquete lo crea P4; hasta entonces estos pasos se omiten y no cuentan como superados.
+      - name: Avisar si falta el paquete del frontend
+        if: ${{ hashFiles('frontend/package-lock.json') == '' }}
+        run: echo "::warning::frontend sin package-lock.json; lint, typecheck, tests y build NO se ejecutaron"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        if: ${{ hashFiles('frontend/package-lock.json') != '' }}
         with:
           node-version: "22"
-      - run: npm --prefix frontend ci
-      - run: npm --prefix frontend run lint
-      - run: npm --prefix frontend run typecheck
-      - run: npm --prefix frontend test -- --run
-      - run: npm --prefix frontend run build
+      - name: Verificar frontend
+        if: ${{ hashFiles('frontend/package-lock.json') != '' }}
+        run: |
+          npm --prefix frontend ci
+          npm --prefix frontend run lint
+          npm --prefix frontend run typecheck
+          npm --prefix frontend test -- --run
+          npm --prefix frontend run build
