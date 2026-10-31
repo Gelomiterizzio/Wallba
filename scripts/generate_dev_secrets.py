@@ -14,13 +14,16 @@ NAMES = ("capability_secret", "executor_token", "baseline_token", "agent_bearer"
 
 def generate(directory: Path) -> list[str]:
     directory.mkdir(parents=True, exist_ok=True)
+    # El directorio protege de otros usuarios del host. Los archivos deben ser legibles
+    # porque Compose los monta con sus permisos y los contenedores corren con otro uid.
+    directory.chmod(0o700)
     created = []
     for name in NAMES:
         path = directory / name
         if path.exists():
             continue
         path.write_text(secrets.token_hex(32), encoding="ascii")
-        path.chmod(0o600)
+        path.chmod(0o644)
         created.append(name)
     return created
 

@@ -9,7 +9,7 @@ Compara la misma `ToolCall`, con la misma seed y el mismo fixture, en dos entorn
 Desde la raíz del repositorio:
 
 ```bash
-python scripts/generate_dev_secrets.py     # crea secrets/ fuera de Git; nunca sobrescribe
+python scripts/generate_dev_secrets.py     # crea secrets/ fuera de Git (carpeta 0700); nunca sobrescribe
 uv sync --project backend --frozen         # entorno local desde el lock
 uv run --project backend pytest tests      # sin Docker, test_live_isolation queda SKIPPED
 

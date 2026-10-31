@@ -5,8 +5,10 @@ Estas pruebas leen la configuración; test_live_isolation.py comprueba la red re
 
 from __future__ import annotations
 
+import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 from pathlib import Path
@@ -140,7 +142,7 @@ def _import_in_image(root: Path, statement: str) -> subprocess.CompletedProcess[
     return subprocess.run(
         [sys.executable, "-c", statement],
         cwd=root,
-        env={"PYTHONPATH": str(root), "SYSTEMROOT": __import__("os").environ.get("SYSTEMROOT", "")},
+        env={"PYTHONPATH": str(root), "SYSTEMROOT": os.environ.get("SYSTEMROOT", "")},
         capture_output=True,
         text=True,
         check=False,
@@ -177,6 +179,10 @@ def test_dev_secret_generator_never_overwrites(tmp_path: Path) -> None:
     assert len(first) >= 32
     assert module.generate(tmp_path) == []
     assert (tmp_path / "executor_token").read_text(encoding="ascii") == first
+    if os.name == "posix":
+        # Los contenedores corren con uid 10001: un archivo 0600 del host no sería legible.
+        assert stat.S_IMODE((tmp_path / "executor_token").stat().st_mode) == 0o644
+        assert stat.S_IMODE(tmp_path.stat().st_mode) == 0o700
 
 
 def test_ci_uses_pinned_actions_and_minimal_permissions() -> None:
