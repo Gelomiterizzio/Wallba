@@ -22,7 +22,7 @@
     "acceptance": "Bearer de agente recibe 403 al aprobar; scopes ajenos no acceden",
     "test": "HTTPX matriz RBAC, sesión revocada, expiry y CSRF",
     "estimate_reason": "Investigación de sesiones, separación de identidad y pruebas de seguridad",
-    "state": "Pendiente"
+    "state": "Implementada y verificada: auth, RBAC, scopes, CSRF, Origin y rate limit."
   },
   {
     "id": "WAL-P3-002",
@@ -50,7 +50,7 @@
     "acceptance": "Cambiar argumento altera digest; misma clave con payload distinto devuelve 409",
     "test": "Vectores canónicos, Unicode, límites e idempotencia",
     "estimate_reason": "Lógica acotada con investigación de equivalencia y vectores",
-    "state": "Pendiente"
+    "state": "Implementada y verificada: canonicalización estricta, digest e idempotencia."
   },
   {
     "id": "WAL-P3-003",
@@ -78,7 +78,7 @@
     "acceptance": "DENY o error del evaluador produce cero invocaciones del executor",
     "test": "Fake de cada decisión, timeout y fallo de auditoría",
     "estimate_reason": "Control crítico con varias dependencias y pruebas negativas",
-    "state": "Pendiente"
+    "state": "Implementada y verificada: gateway fail-closed con política activa y ejecución controlada."
   },
   {
     "id": "WAL-P3-004",
@@ -106,7 +106,7 @@
     "acceptance": "Aprobar al llegar expires_at falla sin efecto aunque UI esté stale",
     "test": "Reinicio, TTL límite, rechazo, cancelación y permisos",
     "estimate_reason": "Estados persistentes y múltiples casos límite",
-    "state": "Pendiente"
+    "state": "Implementada y verificada: crear, consultar, aprobar, rechazar y cancelar."
   },
   {
     "id": "WAL-P3-005",
@@ -134,7 +134,7 @@
     "acceptance": "Dos aprobaciones simultáneas crean como máximo un claim y un efecto",
     "test": "Dos conexiones SQLite, replay, revocación y política obsoleta",
     "estimate_reason": "Mayor complejidad transaccional, análisis y pruebas de fallo",
-    "state": "Pendiente"
+    "state": "Implementada y verificada: snapshot exacto, no autoaprobación y consumo único CAS."
   },
   {
     "id": "WAL-P3-006",
@@ -161,7 +161,7 @@
     "acceptance": "Capacidad manipulada, expirada o reusable no causa efectos",
     "test": "Vectores HMAC, nonce, audience, TTL y fake contractual",
     "estimate_reason": "Integración acotada con criptografía estándar",
-    "state": "Pendiente"
+    "state": "Implementada y verificada: mTLS-ready client, timeout, sin reintento y reconciliación."
   },
   {
     "id": "WAL-P3-007",
@@ -187,7 +187,7 @@
     "acceptance": "Viewer inspecciona con teclado; solo approver autorizado aprueba",
     "test": "Loading, vacío, red caída, stale, doble clic y accesibilidad",
     "estimate_reason": "Feature frontend completa que equilibra la carga de P4",
-    "state": "Pendiente"
+    "state": "Implementada y verificada de forma aislada; integración visual final espera a Persona 4."
   },
   {
     "id": "WAL-P3-008",
@@ -216,7 +216,7 @@
     "acceptance": "Caída posterior al envío no causa otra invocación",
     "test": "Caídas antes de claim, tras commit y antes de receipt",
     "estimate_reason": "Depuración de persistencia y fallos incluida explícitamente",
-    "state": "Pendiente"
+    "state": "Implementada y verificada: outbox transaccional, estados UNKNOWN y recuperación."
   },
   {
     "id": "WAL-P3-009",
@@ -244,7 +244,7 @@
     "acceptance": "Replay no aumenta efectos y manipulación invalida autorización exacta",
     "test": "API, integración y E2E sobre seed sintética",
     "estimate_reason": "Reserva explícita de integración y regresión propia",
-    "state": "Pendiente"
+    "state": "Implementada y verificada: matriz HTTP, seguridad, concurrencia y P1/P2/P3 reales."
   },
   {
     "id": "WAL-P3-010",
@@ -271,6 +271,6 @@
     "acceptance": "PR con evidencia y sin cambios ajenos arbitrarios; UNKNOWN no se presenta como éxito",
     "test": "Suites propias, tipado, lint y smoke pertinente",
     "estimate_reason": "Documentación, revisión y depuración tienen costo asignado",
-    "state": "Pendiente"
+    "state": "Implementada y verificada: documentación de entrega, revisión y límites de integración."
   }
 ]
