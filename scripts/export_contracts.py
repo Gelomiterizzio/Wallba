@@ -23,6 +23,8 @@ from wallba.contracts.results import ToolResult  # noqa: E402
 from wallba.contracts.tool_call import ToolCall  # noqa: E402
 from wallba.foundation.app import create_app  # noqa: E402
 from wallba.foundation.config import Settings  # noqa: E402
+from wallba.foundation.http import Integrations  # noqa: E402
+from wallba.observability.router import router as observability_router  # noqa: E402
 
 SHARED_DTOS: dict[str, Any] = {
     "ToolCall": ToolCall,
@@ -42,7 +44,7 @@ def build_openapi() -> dict[str, Any]:
         executor_url="http://executor",
         executor_token="placeholder",
     )
-    document = create_app(settings).openapi()
+    document = create_app(settings, Integrations(extra_routers=[observability_router])).openapi()
     schemas = document.setdefault("components", {}).setdefault("schemas", {})
     for name, dto in SHARED_DTOS.items():
         schema = TypeAdapter(dto).json_schema(ref_template="#/components/schemas/{model}")

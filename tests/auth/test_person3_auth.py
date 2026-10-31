@@ -56,12 +56,13 @@ def auth_lab(tmp_path):
     run_migrations(data / "control.sqlite")
     engine = create_sqlite_engine(data / "control.sqlite")
     with engine.connect() as connection:
-        assert (
+        # Comprueba las tablas de P3, no la última revisión: otros dominios añaden las suyas.
+        tables = set(
             connection.execute(
-                text("SELECT version_num FROM alembic_version")
-            ).scalar_one()
-            == "0002_person3"
+                text("SELECT name FROM sqlite_master WHERE type = 'table'")
+            ).scalars()
         )
+    assert {"principals", "sessions", "agent_credentials", "login_rate_limits"} <= tables
     seed_agents(engine)
     clock = FixedClock()
     hasher = Argon2PasswordHasher()

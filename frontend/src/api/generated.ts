@@ -72,6 +72,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Audit Index */
+        get: operations["audit_index_api_v1_audit_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/audit/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Audit Export */
+        get: operations["audit_export_api_v1_audit_export_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/audit/{event_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Audit Detail */
+        get: operations["audit_detail_api_v1_audit__event_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Dashboard View */
+        get: operations["dashboard_view_api_v1_dashboard_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/demo-runs": {
         parameters: {
             query?: never;
@@ -268,6 +336,112 @@ export interface components {
             /** Tools */
             tools: ("file.read" | "email.send" | "record.delete" | "db.query")[];
         };
+        /** AuditEventDetail */
+        AuditEventDetail: {
+            event: components["schemas"]["AuditEventView"];
+            integrity: components["schemas"]["IntegrityView"];
+        };
+        /** AuditEventPage */
+        AuditEventPage: {
+            /** Items */
+            items: components["schemas"]["AuditEventView"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
+        /**
+         * AuditEventView
+         * @description Evento tal como se encadenó. Un campo opcional ausente nunca se rellena.
+         */
+        AuditEventView: {
+            /** Agent Id */
+            agent_id?: string | null;
+            /** Checksum */
+            checksum?: string | null;
+            /** Decision */
+            decision?: ("ALLOW" | "DENY" | "REQUIRE_APPROVAL") | null;
+            /** Environment Id */
+            environment_id?: string | null;
+            /** Event Hash */
+            event_hash: string;
+            /** Event Id */
+            event_id: string;
+            /**
+             * Event Type
+             * @enum {string}
+             */
+            event_type: "request_received" | "authorization_decided" | "approval_created" | "approval_approved" | "approval_rejected" | "approval_expired" | "approval_cancelled" | "execution_claimed" | "execution_completed" | "execution_failed" | "execution_unknown" | "policy_activated" | "demo_started" | "demo_completed";
+            /** Evidence Id */
+            evidence_id?: string | null;
+            /** Execution Id */
+            execution_id?: string | null;
+            /** Occurred At */
+            occurred_at: string;
+            /** Policy Id */
+            policy_id?: string | null;
+            /** Policy Version */
+            policy_version?: number | null;
+            /** Previous Hash */
+            previous_hash: string;
+            /** Principal Id */
+            principal_id?: string | null;
+            /** Reason Code */
+            reason_code?: string | null;
+            /** Request Digest */
+            request_digest?: string | null;
+            /** Request Id */
+            request_id?: string | null;
+            /** Resource Id */
+            resource_id?: string | null;
+            /** Risk */
+            risk?: ("LOW" | "MEDIUM" | "HIGH" | "CRITICAL") | null;
+            /** Run Id */
+            run_id?: string | null;
+            /** Schema Version */
+            schema_version: string;
+            /** Sequence */
+            sequence: number;
+            /** Tool */
+            tool?: ("file.read" | "email.send" | "record.delete" | "db.query") | null;
+        };
+        /**
+         * DashboardCounters
+         * @description Una denegación es una decisión, nunca una ejecución fallida.
+         */
+        DashboardCounters: {
+            /** Approvals Pending */
+            approvals_pending: number;
+            /** Decisions */
+            decisions: number;
+            /** Events */
+            events: number;
+            /** Executions Completed */
+            executions_completed: number;
+            /** Executions Failed */
+            executions_failed: number;
+            /** Executions Unknown */
+            executions_unknown: number;
+            /** Requests */
+            requests: number;
+        };
+        /** DashboardView */
+        DashboardView: {
+            /**
+             * As Of
+             * Format: date-time
+             */
+            as_of: string;
+            by_decision: components["schemas"]["DecisionCounts"];
+            by_risk: components["schemas"]["RiskCounts"];
+            counters: components["schemas"]["DashboardCounters"];
+            /** Include Baseline */
+            include_baseline: boolean;
+            /** Recent */
+            recent: components["schemas"]["AuditEventView"][];
+            /** Window From */
+            window_from: string | null;
+            /** Window To */
+            window_to: string | null;
+        };
         /** DbQueryCall */
         DbQueryCall: {
             /** Agent Id */
@@ -312,6 +486,24 @@ export interface components {
              * @enum {string}
              */
             tool: "db.query";
+        };
+        /** DecisionCounts */
+        DecisionCounts: {
+            /**
+             * Allow
+             * @default 0
+             */
+            ALLOW: number;
+            /**
+             * Deny
+             * @default 0
+             */
+            DENY: number;
+            /**
+             * Require Approval
+             * @default 0
+             */
+            REQUIRE_APPROVAL: number;
         };
         /** DecisionEnvelope */
         DecisionEnvelope: {
@@ -569,6 +761,20 @@ export interface components {
             policy: boolean;
         };
         /**
+         * IntegrityView
+         * @description Resultado de recalcular la cadena hasta este evento, con su límite explícito.
+         */
+        IntegrityView: {
+            /** Checked Events */
+            checked_events: number;
+            /** First Invalid Sequence */
+            first_invalid_sequence: number | null;
+            /** Limitation */
+            limitation: string;
+            /** Verified */
+            verified: boolean;
+        };
+        /**
          * MatrixRow
          * @description Fila observada: solo existe si hubo un run persistido con evidencia.
          */
@@ -713,6 +919,29 @@ export interface components {
             record_count: number;
             /** State Digest */
             state_digest: string;
+        };
+        /** RiskCounts */
+        RiskCounts: {
+            /**
+             * Critical
+             * @default 0
+             */
+            CRITICAL: number;
+            /**
+             * High
+             * @default 0
+             */
+            HIGH: number;
+            /**
+             * Low
+             * @default 0
+             */
+            LOW: number;
+            /**
+             * Medium
+             * @default 0
+             */
+            MEDIUM: number;
         };
         /**
          * ScenarioExpectation
@@ -923,6 +1152,152 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AgentDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    audit_index_api_v1_audit_get: {
+        parameters: {
+            query?: {
+                tool?: ("file.read" | "email.send" | "record.delete" | "db.query") | null;
+                agent_id?: string | null;
+                decision?: ("ALLOW" | "DENY" | "REQUIRE_APPROVAL") | null;
+                risk?: ("LOW" | "MEDIUM" | "HIGH" | "CRITICAL") | null;
+                event_type?: ("request_received" | "authorization_decided" | "approval_created" | "approval_approved" | "approval_rejected" | "approval_expired" | "approval_cancelled" | "execution_claimed" | "execution_completed" | "execution_failed" | "execution_unknown" | "policy_activated" | "demo_started" | "demo_completed") | null;
+                request_id?: string | null;
+                run_id?: string | null;
+                q?: string | null;
+                from?: string | null;
+                to?: string | null;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditEventPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    audit_export_api_v1_audit_export_get: {
+        parameters: {
+            query: {
+                tool?: ("file.read" | "email.send" | "record.delete" | "db.query") | null;
+                agent_id?: string | null;
+                decision?: ("ALLOW" | "DENY" | "REQUIRE_APPROVAL") | null;
+                risk?: ("LOW" | "MEDIUM" | "HIGH" | "CRITICAL") | null;
+                event_type?: ("request_received" | "authorization_decided" | "approval_created" | "approval_approved" | "approval_rejected" | "approval_expired" | "approval_cancelled" | "execution_claimed" | "execution_completed" | "execution_failed" | "execution_unknown" | "policy_activated" | "demo_started" | "demo_completed") | null;
+                request_id?: string | null;
+                run_id?: string | null;
+                q?: string | null;
+                from: string;
+                to: string;
+                cursor?: null;
+                limit?: null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    audit_detail_api_v1_audit__event_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditEventDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dashboard_view_api_v1_dashboard_get: {
+        parameters: {
+            query?: {
+                from?: string | null;
+                to?: string | null;
+                include_baseline?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardView"];
                 };
             };
             /** @description Validation Error */

@@ -72,4 +72,11 @@ jobs:
           npm --prefix frontend run lint
           npm --prefix frontend run typecheck
           npm --prefix frontend test -- --run
+          npm --prefix frontend run test:node
           npm --prefix frontend run build
+      - name: Recorrido en navegador con datos de ejemplo
+        if: ${{ hashFiles('frontend/package-lock.json') != '' }}
+        working-directory: frontend
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e

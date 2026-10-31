@@ -1,0 +1,43 @@
+/* Propuesta de docs/PRODUCT_DESIGN.md. El contraste se comprueba con axe sobre las pantallas. */
+:root {
+  color-scheme: dark;
+  --bg: #0b1120;
+  --surface: #111c30;
+  --surface-raised: #19263c;
+  --border: #334155;
+  --text: #f1f5f9;
+  --text-muted: #cbd5e1;
+  --accent: #22d3ee;
+  --allow: #4ade80;
+  --deny: #fca5a5;
+  --approval: #fcd34d;
+  --unknown: #d8b4fe;
+
+  --font-ui: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --text-meta: 13px;
+  --text-dense: 14px;
+  --text-body: 16px;
+  --text-title: 24px;
+  --text-kpi: 32px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --radius: 8px;
+  --radius-large: 12px;
+  --target: 44px;
+  --sidebar: 240px;
+  --header: 64px;
+  --transition: 150ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition: 0ms;
+  }
+}

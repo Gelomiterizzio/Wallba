@@ -5,9 +5,11 @@ description = "WALLBA: firewall de permisos para agentes de IA (MVP sintético)"
 requires-python = ">=3.12,<3.13"
 dependencies = [
   "alembic>=1.13,<2",
+  "argon2-cffi>=23.1,<26",
   "fastapi>=0.115,<1",
   "httpx>=0.27,<1",
   "pydantic>=2.9,<3",
+  "pyyaml>=6,<7",
   "sqlalchemy>=2.0,<2.1",
   "uvicorn>=0.30,<1",
 ]
@@ -15,7 +17,6 @@ dependencies = [
 [dependency-groups]
 dev = [
   "pytest>=8.3,<10",
-  "pyyaml>=6,<7",
 ]
 
 [build-system]

@@ -619,11 +619,11 @@ Riesgo: capturas contienen secretos; mitigación: fixtures sintéticos y redacci
 
 ## 20. Checklist
 
-- [ ] Revisar los contratos, las rutas de propiedad y el presupuesto.
+- [x] Revisar los contratos, las rutas de propiedad y el presupuesto.
 - [ ] Completar WAL-P4-001 y aprobar tokens propuestos.
-- [ ] Completar WAL-P4-002 y validar fixtures contra contratos.
-- [ ] Completar WAL-P4-003 con pruebas de redacción y concurrencia.
-- [ ] Completar WAL-P4-004 con permisos y paginación estable.
+- [x] Completar WAL-P4-002 y validar fixtures contra contratos.
+- [x] Completar WAL-P4-003 con pruebas de redacción y concurrencia.
+- [x] Completar WAL-P4-004 con permisos y paginación estable.
 - [ ] Completar WAL-P4-005 sin métricas fabricadas.
 - [ ] Completar WAL-P4-006 con timeline y exportación.
 - [ ] Completar WAL-P4-007 sobre dos entornos equivalentes.

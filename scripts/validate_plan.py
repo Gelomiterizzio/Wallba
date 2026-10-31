@@ -6,6 +6,7 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+GENERATED_DIRS = {'node_modules', 'test-results', 'playwright-report', 'dist', '.venv'}
 
 
 def validate():
@@ -113,7 +114,7 @@ def validate():
         if set(fields) - {'description', 'globs', 'alwaysApply'} or fields.get('alwaysApply') not in {'true', 'false'}:
             errors.append(f'{path.name}: frontmatter MDC inválido')
     broken = []
-    documents = list(ROOT.rglob('*.md')) + rules
+    documents = [path for path in ROOT.rglob('*.md') if not GENERATED_DIRS & set(path.parts)] + rules
     for path in documents:
         content = path.read_text(encoding='utf-8-sig')
         for target in re.findall(r'\[[^\]]+\]\(([^)]+)\)', content):
