@@ -1,0 +1,4 @@
+.browser-cache/
+.artifacts/
+playwright-report/
+test-results/
