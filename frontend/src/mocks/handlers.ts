@@ -32,7 +32,11 @@ export function createHandlers(): HttpHandler[] {
   const allRuns = () => [...Object.values(fixtures.demoRuns), ...state.created.values()]
 
   return [
-    http.get(`${API}/auth/me`, () => (state.loggedIn ? HttpResponse.json(fixtures.session) : problem(401, "UNAUTHENTICATED"))),
+    http.get(`${API}/auth/me`, () =>
+      state.loggedIn
+        ? HttpResponse.json({ ...fixtures.session, kind: "human", username: "mock-operator" })
+        : problem(401, "UNAUTHENTICATED"),
+    ),
     http.post(`${API}/auth/login`, () => {
       state.loggedIn = true
       return HttpResponse.json(fixtures.session)
@@ -118,5 +122,7 @@ export function createHandlers(): HttpHandler[] {
     }),
     http.get(`${API}/matrix`, () => HttpResponse.json({ items: fixtures.matrix, next_cursor: null })),
     http.get(`${API}/policies`, () => HttpResponse.json({ items: fixtures.policies, next_cursor: null })),
+    http.get(`${API}/guard/overview`, () => HttpResponse.json({ project: null, summary: null })),
+    http.get(`${API}/approvals`, () => HttpResponse.json({ items: [], next_cursor: null })),
   ]
 }

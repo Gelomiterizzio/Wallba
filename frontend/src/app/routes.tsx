@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import { ErrorPanel } from "../components/states"
 import { AgentDetails } from "../features/agents/AgentDetails"
 import { AgentsPage } from "../features/agents/AgentsPage"
-import { ApprovalsPlaceholder } from "../features/approvals-route/ApprovalsPlaceholder"
+import { ApprovalCenter } from "../features/approvals"
 import { AttackMatrixPage } from "../features/attack-matrix/AttackMatrixPage"
 import { AuditEventPage } from "../features/audit/AuditEventPage"
 import { AuditPage } from "../features/audit/AuditPage"
@@ -10,6 +10,8 @@ import { DashboardPage } from "../features/dashboard/DashboardPage"
 import { LoginPage } from "../features/login/LoginPage"
 import { PlaygroundPage } from "../features/playground/PlaygroundPage"
 import { PlaygroundRunPage } from "../features/playground/PlaygroundRunPage"
+import { AlertsPage } from "../features/protection/AlertsPage"
+import { ProtectionPage } from "../features/protection/ProtectionPage"
 import { PolicyEditorRoute, PolicyListRoute } from "../features/policies-route/PolicyRoutes"
 import { AppShell } from "./AppShell"
 import { useSession } from "./session"
@@ -40,12 +42,14 @@ export function AppRoutes() {
         <Route path="agents/:agentId" element={<AgentDetails />} />
         <Route path="policies" element={<PolicyListRoute />} />
         <Route path="policies/:policyId/edit" element={<PolicyEditorRoute />} />
-        <Route path="approvals" element={<ApprovalsPlaceholder />} />
+        <Route path="approvals" element={<ApprovalCenter />} />
         <Route path="audit" element={<AuditPage />} />
         <Route path="audit/:eventId" element={<AuditEventPage />} />
         <Route path="playground" element={<PlaygroundPage />} />
         <Route path="playground/:runId" element={<PlaygroundRunPage />} />
         <Route path="matrix" element={<AttackMatrixPage />} />
+        <Route path="protection" element={<ProtectionPage />} />
+        <Route path="alerts" element={<AlertsPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

@@ -77,6 +77,7 @@ class ActivateBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
     version: int = Field(strict=True, ge=1, le=1_000_000)
     expected_active_version: int | None = Field(strict=True)
+    expected_active_policy_id: str | None = None
 
 
 def mount_policy_api(
@@ -183,8 +184,16 @@ def create_policy_router(service: PolicyService, actor_provider: Callable[[], Po
             raise PolicyHttpError(422, "VALIDATION_ERROR", _pydantic_details(exc), request_id) from exc
         except PolicyHttpError:
             raise
+        if body.expected_active_policy_id is not None:
+            _named_policy_id(body.expected_active_policy_id, "expected_active_policy_id", request_id)
         try:
-            snapshot = service.activate(policy_id, body.version, body.expected_active_version, actor.principal_id)
+            snapshot = service.activate(
+                policy_id,
+                body.version,
+                body.expected_active_version,
+                actor.principal_id,
+                body.expected_active_policy_id,
+            )
         except PolicyConflict as exc:
             raise PolicyHttpError(409, exc.code, request_id=request_id) from exc
         except PolicyNotFound as exc:
@@ -243,11 +252,15 @@ def _admin(actor: PolicyActor | None, request_id: str) -> PolicyActor:
 
 
 def _policy_id(value: str, request_id: str) -> None:
+    _named_policy_id(value, "policy_id", request_id)
+
+
+def _named_policy_id(value: str, field: str, request_id: str) -> None:
     if _SLUG.fullmatch(value) is None:
         raise PolicyHttpError(
             422,
             "VALIDATION_ERROR",
-            [{"field": "policy_id", "code": "invalid_value"}],
+            [{"field": field, "code": "invalid_value"}],
             request_id,
         )
 

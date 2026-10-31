@@ -6,6 +6,8 @@
 !backend/alembic/
 !backend/wallba/
 !frontend/
+!policies/
+!policies/demo.yaml
 !infra/nginx.conf
 **/__pycache__/
 **/*.py[cod]

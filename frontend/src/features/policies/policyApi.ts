@@ -45,7 +45,12 @@ export type PolicyApi = {
   getVersion(policyId: string, version: number): Promise<VersionDetail>
   validate(format: "yaml" | "json", content: string): Promise<ValidateResult>
   createVersion(policyId: string, document: unknown): Promise<VersionSummary>
-  activate(policyId: string, version: number, expectedActiveVersion: number | null): Promise<VersionSummary>
+  activate(
+    policyId: string,
+    version: number,
+    expectedActiveVersion: number | null,
+    expectedActivePolicyId?: string | null,
+  ): Promise<VersionSummary>
 }
 
 export function readPolicyError(status: number, payload: unknown): PolicyRequestError {
@@ -111,10 +116,22 @@ export function createPolicyApi(baseUrl: string, csrfToken: string | null = null
         [201],
       ) as Promise<VersionSummary>
     },
-    async activate(policyId: string, version: number, expectedActiveVersion: number | null) {
+    async activate(
+      policyId: string,
+      version: number,
+      expectedActiveVersion: number | null,
+      expectedActivePolicyId: string | null = null,
+    ) {
+      const body: { version: number; expected_active_version: number | null; expected_active_policy_id?: string } = {
+        version,
+        expected_active_version: expectedActiveVersion,
+      }
+      if (expectedActivePolicyId) {
+        body.expected_active_policy_id = expectedActivePolicyId
+      }
       const payload = await request(
         `/policies/${encodeURIComponent(policyId)}/activate`,
-        { method: "POST", body: JSON.stringify({ version, expected_active_version: expectedActiveVersion }) },
+        { method: "POST", body: JSON.stringify(body) },
         [200],
       )
       return payload as VersionSummary

@@ -125,6 +125,7 @@ class SqlitePolicyRepository:
         actor_id: str,
         occurred_at: str,
         audit: AuditSink,
+        expected_active_policy_id: str | None = None,
     ) -> PolicySnapshot:
         if not _CREATED_AT.fullmatch(occurred_at):
             raise PolicyStorageError()
@@ -138,8 +139,18 @@ class SqlitePolicyRepository:
                 current = con.execute(
                     "SELECT policy_id, version FROM policy_activation WHERE singleton_id = 1"
                 ).fetchone()
+                current_policy_id = None if current is None else str(current["policy_id"])
                 current_version = None if current is None else int(current["version"])
                 if expected_active_version != current_version:
+                    raise ActivationConflict()
+                # El número de versión no identifica la política activa: other-policy v1
+                # no puede sustituir a demo-policy v1 solo porque ambas son la versión 1.
+                if current_policy_id is None:
+                    if expected_active_policy_id is not None:
+                        raise ActivationConflict()
+                elif expected_active_policy_id not in (None, current_policy_id):
+                    raise ActivationConflict()
+                elif current_policy_id != policy_id and expected_active_policy_id != current_policy_id:
                     raise ActivationConflict()
                 row = con.execute(
                     """
@@ -165,9 +176,9 @@ class SqlitePolicyRepository:
                         """
                         UPDATE policy_activation
                         SET policy_id = ?, version = ?, revision = revision + 1
-                        WHERE singleton_id = 1 AND version = ?
+                        WHERE singleton_id = 1 AND policy_id = ? AND version = ?
                         """,
-                        (policy_id, version, expected_active_version),
+                        (policy_id, version, current_policy_id, expected_active_version),
                     )
                     if updated.rowcount != 1:
                         raise ActivationConflict()

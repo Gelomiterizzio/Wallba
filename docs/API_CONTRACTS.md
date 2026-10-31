@@ -67,7 +67,7 @@ Error: `{error:{code,message,request_id,details:[]}}`. `details` solo `{field,co
 | GET /policies/{id}/versions/{version} | P2 | documento inmutable + checksum | viewer |
 | POST /policies/validate | P2 | {format:'yaml'|'json',content:string} -> {valid,errors,normalized_policy} | policy_admin + CSRF; jamás activa |
 | POST /policies/{id}/versions | P2 | documento válido -> nueva versión | policy_admin + CSRF; 409 versión existente |
-| POST /policies/{id}/activate | P2 | {version,expected_active_version} -> active version | policy_admin + CSRF; CAS y evento |
+| POST /policies/{id}/activate | P2 | {version,expected_active_version,expected_active_policy_id?} -> active version | policy_admin + CSRF; el CAS compara política y versión; sin el id no se sustituye otra política con el mismo número |
 | GET /dashboard | P4 | counters, by_decision, by_risk, recent, as_of | viewer; filtros from/to UTC |
 | GET /audit | P4 | filtros tool/agent_id/decision/risk/from/to/request_id -> página | viewer |
 | GET /audit/{event_id} | P4 | detalle saneado + hashes/sequence | viewer |

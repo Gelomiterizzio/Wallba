@@ -2,6 +2,7 @@
 
 from collections.abc import Mapping
 from datetime import UTC, datetime
+from enum import Enum
 from uuid import uuid4
 
 from sqlalchemy import insert
@@ -71,4 +72,21 @@ class TransactionalOutbox:
                     ),
                 },
             )
+        _mirror_dashboard(payload, transaction)
         return row["event_id"]
+
+
+def _mirror_dashboard(payload, transaction) -> None:
+    """Copia el evento a la cadena que lee el dashboard. Un campo inválido no borra el outbox."""
+    from wallba.observability.ports import AuditSchemaError, AuditWriteError
+    from wallba.observability.writer import AuditWriter
+
+    plain = {}
+    for key, value in payload.items():
+        if value is None:
+            continue
+        plain[key] = value.value if isinstance(value, Enum) else value
+    try:
+        AuditWriter().append(plain, transaction)
+    except (AuditSchemaError, AuditWriteError, ValueError, TypeError):
+        return

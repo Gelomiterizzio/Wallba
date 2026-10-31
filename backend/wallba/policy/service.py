@@ -83,9 +83,12 @@ class PolicyService:
         version: int,
         expected_active_version: int | None,
         actor_id: str,
+        expected_active_policy_id: str | None = None,
     ) -> PolicySnapshot:
         _require_token(policy_id, "policy_id")
         _require_token(actor_id, "actor_id")
+        if expected_active_policy_id is not None:
+            _require_token(expected_active_policy_id, "expected_active_policy_id")
         try:
             return self._repository.activate(
                 policy_id=policy_id,
@@ -94,6 +97,7 @@ class PolicyService:
                 actor_id=actor_id,
                 occurred_at=_format_utc(self._clock.now()),
                 audit=self._audit,
+                expected_active_policy_id=expected_active_policy_id,
             )
         except ActivationConflict as exc:
             raise PolicyConflict("STALE_POLICY") from exc

@@ -22,6 +22,8 @@ describe("shell y sesión", () => {
       "Auditoría",
       "Playground",
       "Matriz de ataques",
+      "Protección",
+      "Alertas",
     ])
     await user.click(within(nav).getByRole("link", { name: "Agentes" }))
     expect(await screen.findByRole("heading", { level: 1, name: "Agentes" })).toBeInTheDocument()
@@ -141,10 +143,10 @@ describe("rutas de otros módulos", () => {
     expect(await screen.findByText("demo-policy", { exact: false })).toBeInTheDocument()
   })
 
-  it("aprobaciones no permite aprobar mientras el módulo de P3 no esté integrado", async () => {
-    renderApp(`/approvals?request_id=${"d".repeat(8)}`)
-    expect(await screen.findByText("Centro de aprobaciones aún no integrado")).toBeInTheDocument()
-    expect(screen.queryByRole("button", { name: /aprobar/i })).not.toBeInTheDocument()
+  it("el centro de aprobaciones no ofrece aprobar si no hay una solicitud seleccionada", async () => {
+    renderApp("/approvals")
+    expect(await screen.findByRole("heading", { level: 1, name: "Aprobaciones humanas" })).toBeInTheDocument()
+    expect(screen.queryByRole("button", { name: /^Aprobar$/ })).not.toBeInTheDocument()
   })
 
   it("una ruta inexistente mantiene la navegación", async () => {
