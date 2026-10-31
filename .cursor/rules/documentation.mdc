@@ -1,0 +1,8 @@
+---
+description: "Documentación, trazabilidad y estado"
+globs: "docs/**, README.md"
+alwaysApply: false
+---
+
+Mantener docs/planning/person-*-tasks.json como fuente de tareas y regenerar matrices. No cambiar esfuerzo sin justificación. Actualizar manual y contratos con cambio de comportamiento. Enlaces relativos válidos. Pruebas propuestas no son ejecutadas.
+

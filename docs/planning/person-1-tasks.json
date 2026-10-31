@@ -1,0 +1,289 @@
+[
+  {
+    "id": "WAL-P1-001",
+    "owner": 1,
+    "module": "Foundation Agent Executor Demo",
+    "story": "Como integrante necesito contratos antes de depender de otro módulo.",
+    "title": "Contratos compartidos y fixtures iniciales",
+    "steps": [
+      "Materializar DTO Pydantic discriminados y estados de API con extra forbid.",
+      "Definir puertos sin imports de implementaciones y generar cliente TypeScript.",
+      "Publicar fixtures allow/deny/pending/error saneados; revisar con P2/P3/P4."
+    ],
+    "priority": "Crítica",
+    "effort": 2,
+    "dependencies": [],
+    "files": [
+      "backend/wallba/contracts/",
+      "contracts/openapi.json",
+      "contracts/examples/",
+      "frontend/src/api/generated.ts"
+    ],
+    "subagent": "p1-system-architect",
+    "acceptance": "Given un campo extra o tool/operation incoherentes, When se valida el DTO, Then se rechaza y Python/TypeScript conservan el mismo contrato.",
+    "test": "pytest tests/contracts; npm --prefix frontend run typecheck",
+    "estimate_reason": "0.8 tipos/puertos + 0.5 generador/fixtures + 0.4 revisión/pruebas + 0.3 documentación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P1-002",
+    "owner": 1,
+    "module": "Foundation Agent Executor Demo",
+    "story": "Como equipo necesito instalar y arrancar desde una base reproducible.",
+    "title": "Scaffold reproducible y configuración segura",
+    "steps": [
+      "Crear app factory sin registrar endpoints ajenos prematuramente.",
+      "Resolver versiones compatibles y locks; separar perfiles control/executor/agent/demo.",
+      "Validar configuración y secretos al inicio, sin valores reales en Git."
+    ],
+    "priority": "Alta",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P1-001"
+    ],
+    "files": [
+      "backend/wallba/foundation/app.py",
+      "backend/wallba/foundation/config.py",
+      "backend/pyproject.toml",
+      "backend/uv.lock",
+      ".env.example"
+    ],
+    "subagent": "p1-system-architect",
+    "acceptance": "Given un entorno limpio y configuración válida, When se instalan locks, Then arranca health local; con secreto requerido ausente falla cerrado.",
+    "test": "pytest tests/foundation/test_config.py; npm --prefix frontend run build",
+    "estimate_reason": "0.8 estructura/locks + 0.5 configuración + 0.4 pruebas smoke + 0.3 guía.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P1-003",
+    "owner": 1,
+    "module": "Foundation Agent Executor Demo",
+    "story": "Como desarrollador necesito almacenamiento con invariantes y evolución explícitas.",
+    "title": "Persistencia base y migraciones coordinadas",
+    "steps": [
+      "Preparar engine/session SQLite, foreign keys, WAL y busy_timeout de 5s.",
+      "Crear baseline Alembic y modelos agents/demo_runs/evidence; integrar revisiones de modelos ajenos con sus dueños.",
+      "Probar DB vacía y upgrade desde fixture previo; definir backup/restore sobre copia."
+    ],
+    "priority": "Alta",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P1-002"
+    ],
+    "files": [
+      "backend/wallba/foundation/database.py",
+      "backend/alembic/",
+      "tests/foundation/test_migrations.py"
+    ],
+    "subagent": "p1-system-architect",
+    "acceptance": "Given DB vacía o fixture previo, When se aplica migración, Then existen restricciones y no se pierden datos anteriores.",
+    "test": "pytest tests/foundation/test_migrations.py",
+    "estimate_reason": "0.7 base/DDL propio + 0.5 coordinación migraciones + 0.5 pruebas + 0.3 recuperación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P1-004",
+    "owner": 1,
+    "module": "Foundation Agent Executor Demo",
+    "story": "Como demostrador necesito efectos verificables sin recursos reales.",
+    "title": "Cuatro herramientas con efectos sintéticos",
+    "steps": [
+      "Implementar file.read por catálogo inmutable y max_bytes acotado.",
+      "Implementar email.send como outbox SIMULATED, record.delete parametrizado y db.query por query_id cerrado.",
+      "Validar de nuevo DTO/recurso en ejecutor y producir resultados saneados con digest."
+    ],
+    "priority": "Crítica",
+    "effort": 3,
+    "dependencies": [
+      "WAL-P1-001",
+      "WAL-P1-003"
+    ],
+    "files": [
+      "backend/wallba/executor/tools/",
+      "tests/executor/test_tools.py"
+    ],
+    "subagent": "p1-ai-agent-engineer",
+    "acceptance": "Given parámetros válidos sobre fixture, When se ejecuta cada herramienta, Then el efecto/resultados son medibles; parámetros extra/rutas/SQL se rechazan.",
+    "test": "pytest tests/executor/test_tools.py",
+    "estimate_reason": "1.4 adaptadores + 0.5 aislamiento/catálogos + 0.8 pruebas/errores + 0.3 documentación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P1-005",
+    "owner": 1,
+    "module": "Foundation Agent Executor Demo",
+    "story": "Como usuario necesito un agente demostrativo que genere solicitudes trazables.",
+    "title": "Agente guionado y APIs de catálogo",
+    "steps": [
+      "Definir AgentAdapter y ScriptedAgent con escenarios cerrados y máximo cinco llamadas.",
+      "Enviar solicitudes sólo por ToolGateway con credencial scope, sin acceso al ejecutor ni datos.",
+      "Implementar GET agents/detalle y POST/GET agent-runs con estados y transcripciones saneadas."
+    ],
+    "priority": "Alta",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P1-001",
+      "WAL-P1-002"
+    ],
+    "files": [
+      "backend/wallba/agent/",
+      "tests/agent/"
+    ],
+    "subagent": "p1-ai-agent-engineer",
+    "acceptance": "Given S08 con instrucción maliciosa ficticia, When corre ScriptedAgent, Then genera la llamada destructiva guionada y declara que no es inferencia de LLM.",
+    "test": "pytest tests/agent",
+    "estimate_reason": "0.8 adapter y trace + 0.5 API + 0.5 pruebas + 0.2 límites de demostración.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P1-006",
+    "owner": 1,
+    "module": "Foundation Agent Executor Demo",
+    "story": "Como proxy necesito un ejecutor que rechace acceso directo y replay.",
+    "title": "Servicio ejecutor con capacidades y journal",
+    "steps": [
+      "Validar HMAC, audience, TTL, nonce, digest, principal, entorno, resource_version y policy version según contrato de P3.",
+      "Reclamar execution_id/nonce de forma única y confirmar efecto/receipt juntos cuando sea posible.",
+      "Exponer receipt interno autenticado y resolver timeout/reinicio sin reintentar efectos a ciegas."
+    ],
+    "priority": "Crítica",
+    "effort": 3,
+    "dependencies": [
+      "WAL-P1-003",
+      "WAL-P1-004"
+    ],
+    "files": [
+      "backend/wallba/executor/service.py",
+      "backend/wallba/executor/capabilities.py",
+      "backend/wallba/executor/journal.py",
+      "tests/executor/test_capabilities.py",
+      "tests/executor/test_recovery.py"
+    ],
+    "subagent": "p1-ai-agent-engineer",
+    "acceptance": "Given capacidad alterada, expirada, replay o entorno distinto, When se invoca ejecutor, Then cero efecto nuevo; receipt duradero preserva resultado tras reinicio.",
+    "test": "pytest tests/executor/test_capabilities.py tests/executor/test_recovery.py",
+    "estimate_reason": "1.0 seguridad del puerto + 0.8 journal/transacciones + 0.9 fallos/concurrencia + 0.3 revisión P3.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P1-007",
+    "owner": 1,
+    "module": "Foundation Agent Executor Demo",
+    "story": "Como equipo necesito comparar condiciones iniciales equivalentes.",
+    "title": "Fixtures duales y catálogo de diez escenarios",
+    "steps": [
+      "Crear fixture inmutable con filas UUID, archivos públicos/restringidos y outbox vacía.",
+      "Preparar S01..S10 y secuencias especiales S07/S09/S10 junto a P2/P3.",
+      "Copiar baseline/protected con seed común, digest inicial y recursos separados por run_id."
+    ],
+    "priority": "Alta",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P1-004",
+      "WAL-P1-005"
+    ],
+    "files": [
+      "backend/wallba/demo/fixtures.py",
+      "backend/wallba/demo/scenarios.py",
+      "tests/demo/test_fixtures.py"
+    ],
+    "subagent": "p1-ai-agent-engineer",
+    "acceptance": "Given una seed idéntica, When se preparan los dos entornos, Then los digests funcionales iniciales coinciden y los volúmenes son distintos.",
+    "test": "pytest tests/demo/test_fixtures.py",
+    "estimate_reason": "0.7 dataset + 0.5 catálogo + 0.6 reproducibilidad + 0.2 coordinación/documentación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P1-008",
+    "owner": 1,
+    "module": "Foundation Agent Executor Demo",
+    "story": "Como presentador necesito observar la misma intención con y sin firewall.",
+    "title": "Runner paired, matriz y evidencia",
+    "steps": [
+      "Ejecutar pareja aislada sin flag de bypass sobre protegido; persistir estados parciales y espera humana.",
+      "Implementar APIs scenarios/demo-runs/evidence/matrix con RBAC y CSRF de P3.",
+      "Generar manifest de inputs, before/after, receipts, decisiones, versiones y audit IDs.",
+      "Mantener matriz vacía hasta runs reales; distinguir observado/esperado/N/A/UNKNOWN y no autoaprobar S06."
+    ],
+    "priority": "Crítica",
+    "effort": 4,
+    "dependencies": [
+      "WAL-P1-005",
+      "WAL-P1-006",
+      "WAL-P1-007"
+    ],
+    "files": [
+      "backend/wallba/demo/runner.py",
+      "backend/wallba/demo/evidence.py",
+      "backend/wallba/demo/routes.py",
+      "tests/demo/test_runner.py",
+      "tests/demo/test_evidence.py"
+    ],
+    "subagent": "p1-ai-agent-engineer",
+    "acceptance": "Given S04 desde fixture limpio, When completa runner real, Then baseline elimina y protected conserva fila con decisión, journal y manifest verificables.",
+    "test": "pytest tests/demo/test_runner.py tests/demo/test_evidence.py",
+    "estimate_reason": "1.5 orchestration + 0.8 API/persistencia + 0.9 evidencia/fallos + 0.5 integración + 0.3 guía demo.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P1-009",
+    "owner": 1,
+    "module": "Foundation Agent Executor Demo",
+    "story": "Como equipo necesito levantar el sistema y validar cambios de forma consistente.",
+    "title": "Aislamiento Compose y coordinación CI",
+    "steps": [
+      "Crear redes/volúmenes/secret mounts mínimos y publicar sólo web en loopback.",
+      "Separar baseline por perfil demo y negar reachability agente-ejecutor.",
+      "Configurar CI de locks, tipos, tests por dueño, build, OpenAPI diff y seguridad de dependencias."
+    ],
+    "priority": "Crítica",
+    "effort": 3,
+    "dependencies": [
+      "WAL-P1-002",
+      "WAL-P1-003",
+      "WAL-P1-006"
+    ],
+    "files": [
+      "infra/compose.yaml",
+      "infra/Dockerfile.api",
+      "infra/Dockerfile.executor",
+      "infra/Dockerfile.agent",
+      "infra/Dockerfile.web",
+      ".github/workflows/ci.yml",
+      "tests/infra/"
+    ],
+    "subagent": "p1-system-architect",
+    "acceptance": "Given Compose de demo, When agente intenta acceder al ejecutor o sus volúmenes, Then no tiene red/credenciales/mounts y las pruebas de aislamiento fallan si se añade acceso.",
+    "test": "docker compose -f infra/compose.yaml config; pytest tests/infra",
+    "estimate_reason": "1.1 Compose/Docker + 0.7 CI + 0.8 pruebas seguridad/build + 0.4 instrucciones.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P1-010",
+    "owner": 1,
+    "module": "Foundation Agent Executor Demo",
+    "story": "Como equipo necesito una demo recuperable con limitaciones explícitas.",
+    "title": "Integración final y recuperación demostrable",
+    "steps": [
+      "Conectar gateway real P3, motor P2 y AuditSink P4 sin asumir sus suites.",
+      "Probar backup/restore en copia y reset limitado a volúmenes etiquetados por run_id.",
+      "Preparar procedimiento de demo, evidencia final y PR con riesgos/rollback."
+    ],
+    "priority": "Alta",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P1-008",
+      "WAL-P1-009"
+    ],
+    "files": [
+      "tests/integration/test_foundation_demo.py",
+      "tests/foundation/test_restore.py",
+      "backend/wallba/demo/README.md"
+    ],
+    "subagent": "wallba-verifier",
+    "acceptance": "Given un fallo a mitad de run o reinicio tras efecto, When se recupera, Then se conserva evidencia y no se repite una operación por ausencia de respuesta.",
+    "test": "pytest tests/integration/test_foundation_demo.py tests/foundation/test_restore.py",
+    "estimate_reason": "0.7 integración + 0.5 recuperación + 0.5 evidencia/revisión + 0.3 documentación.",
+    "state": "Pendiente"
+  }
+]

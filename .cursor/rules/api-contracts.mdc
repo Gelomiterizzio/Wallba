@@ -1,0 +1,8 @@
+---
+description: "Cambios de DTO, endpoints y cliente"
+globs: "backend/wallba/contracts/**, contracts/**, frontend/src/api/**"
+alwaysApply: false
+---
+
+docs/API_CONTRACTS.md es el contrato wire. Generados solo mediante herramientas P1. Exigir revisión de productores y consumidores, fixtures y contract tests para cambios de schema. Nunca confiar principal/roles/context del cliente.
+

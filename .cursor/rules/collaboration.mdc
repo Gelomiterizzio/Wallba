@@ -1,0 +1,7 @@
+---
+description: "PR, conflictos y bloqueos"
+alwaysApply: false
+---
+
+Leer docs/GITHUB_WORKFLOW.md y docs/ROADMAP.md. Entregar una tarea verificable por PR. Bloqueo registra ID, dueño, dependencia y siguiente acción; seguir otra tarea desbloqueada. Conflicto lo resuelve propietario sin sobrescribir contribuciones.
+

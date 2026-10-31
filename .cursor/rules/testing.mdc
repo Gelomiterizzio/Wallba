@@ -1,0 +1,8 @@
+---
+description: "Pruebas y evidencia"
+globs: "tests/**, frontend/**/*.test.*"
+alwaysApply: false
+---
+
+Seguir docs/TEST_STRATEGY.md. Cada dueño prueba su módulo. Distinguir mocks de ejecutor real; cubrir fallos y carreras con relojes controlados. No inventar PASS. Registrar comando, commit, exit code, seed y digest.
+

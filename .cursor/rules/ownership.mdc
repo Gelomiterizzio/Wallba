@@ -1,0 +1,7 @@
+---
+description: "Propiedad y colaboración"
+alwaysApply: true
+---
+
+Consultar docs/OWNERSHIP_MATRIX.md antes de editar. Exactamente cuatro responsables humanos. No editar archivos ajenos sin revisión del dueño. Sin push o merge sin autorización explícita. Cambios incompatibles requieren propuesta y pruebas de consumidores.
+

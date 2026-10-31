@@ -1,0 +1,278 @@
+[
+  {
+    "id": "WAL-P2-001",
+    "owner": 2,
+    "module": "Policy and Security",
+    "story": "Como integrador necesito entradas y decisiones inequívocas.",
+    "title": "Esquemas y dominio de autorización",
+    "steps": [
+      "Definir PolicyDocument, Rule, EvaluationRequest y DecisionResult con campos extra prohibidos.",
+      "Crear modelos discriminados para los cuatro parámetros de herramientas.",
+      "Enumerar códigos de rechazo y fixtures válidos/ inválidos."
+    ],
+    "priority": "Crítica",
+    "effort": 2,
+    "dependencies": [],
+    "files": [
+      "backend/wallba/policy/models.py",
+      "backend/wallba/policy/schemas.py",
+      "tests/policy/test_schema.py"
+    ],
+    "subagent": "p2-policy-engineer",
+    "acceptance": "Given una política con campos desconocidos, When se valida, Then se rechaza con una ruta de error y no cambia la activa.",
+    "test": "pytest tests/policy/test_schema.py",
+    "estimate_reason": "1.0 implementación de esquemas + 0.5 investigación de coerción/duplicados + 0.5 pruebas y documentación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P2-002",
+    "owner": 2,
+    "module": "Policy and Security",
+    "story": "Como administrador necesito importar reglas sin ejecutar contenido.",
+    "title": "Carga segura de YAML y JSON",
+    "steps": [
+      "Rechazar claves duplicadas, tags YAML, aliases, múltiples documentos y estructuras demasiado grandes.",
+      "Limitar bytes, profundidad, cantidad de reglas y longitud de strings antes de evaluar.",
+      "Convertir YAML/JSON al mismo modelo y serialización canónica."
+    ],
+    "priority": "Crítica",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P2-001"
+    ],
+    "files": [
+      "backend/wallba/policy/loader.py",
+      "tests/policy/test_loader.py"
+    ],
+    "subagent": "p2-policy-engineer",
+    "acceptance": "Given YAML con alias o clave duplicada, When se importa, Then responde POLICY_INVALID y la herramienta no se ejecuta.",
+    "test": "pytest tests/policy/test_loader.py",
+    "estimate_reason": "0.8 parser y límites + 0.7 investigación de bombas/ambigüedad + 0.5 pruebas de equivalencia.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P2-003",
+    "owner": 2,
+    "module": "Policy and Security",
+    "story": "Como proxy necesito una única decisión reproducible.",
+    "title": "Evaluador determinista y precedencia",
+    "steps": [
+      "Evaluar conjunción de campos y condiciones sobre contexto autenticado.",
+      "Aplicar DENY sobre REQUIRE_APPROVAL sobre ALLOW, con DENY si ninguna regla permite.",
+      "Ordenar IDs coincidentes para explicación estable y devolver versión/hash.",
+      "Probar permutaciones y equivalencia JSON/YAML sin confiar en texto del agente."
+    ],
+    "priority": "Crítica",
+    "effort": 4,
+    "dependencies": [
+      "WAL-P2-001",
+      "WAL-P2-002"
+    ],
+    "files": [
+      "backend/wallba/policy/evaluator.py",
+      "backend/wallba/policy/matchers.py",
+      "tests/policy/test_evaluator.py"
+    ],
+    "subagent": "p2-policy-engineer",
+    "acceptance": "Given reglas ALLOW y DENY coincidentes, When cambia su orden, Then siempre devuelve DENY y los mismos IDs ordenados.",
+    "test": "pytest tests/policy/test_evaluator.py",
+    "estimate_reason": "1.8 algoritmo y matchers + 0.8 casos límite/investigación + 1.0 pruebas de propiedades + 0.4 contrato.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P2-004",
+    "owner": 2,
+    "module": "Policy and Security",
+    "story": "Como propietario de datos necesito que el permiso limite el efecto exacto.",
+    "title": "Restricciones de parámetros y clasificación de riesgo",
+    "steps": [
+      "Validar max_bytes, to/subject/body, record_id y query_id/limit con contratos tipados.",
+      "Denegar campos omitidos relevantes, tipos coercionados, recursos fuera de alcance y parámetros adicionales.",
+      "Calcular riesgo desde catálogo server y elevarlo por condiciones; ignorar riesgo declarado por agente."
+    ],
+    "priority": "Crítica",
+    "effort": 3,
+    "dependencies": [
+      "WAL-P2-001",
+      "WAL-P2-003"
+    ],
+    "files": [
+      "backend/wallba/policy/parameters.py",
+      "backend/wallba/policy/risk.py",
+      "tests/policy/test_parameters.py"
+    ],
+    "subagent": "p2-policy-engineer",
+    "acceptance": "Given to fuera de la lista autorizada o query_id desconocido, When se evalúa, Then DENY antes de ejecutar el adaptador.",
+    "test": "pytest tests/policy/test_parameters.py",
+    "estimate_reason": "1.2 controles específicos + 0.5 clasificación + 0.9 adversariales + 0.4 explicación e integración.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P2-005",
+    "owner": 2,
+    "module": "Policy and Security",
+    "story": "Como administrador necesito publicar una versión sin modificar decisiones históricas.",
+    "title": "Repositorio inmutable y activación transaccional",
+    "steps": [
+      "Persistir versiones inmutables y único puntero activo en tablas definidas por P1.",
+      "Validar antes de guardar/activar y usar compare-and-swap expected_active_version.",
+      "Emitir evento de publicación mediante puerto de auditoría y exponer snapshot consistente al proxy."
+    ],
+    "priority": "Crítica",
+    "effort": 3,
+    "dependencies": [
+      "WAL-P2-002",
+      "WAL-P2-003"
+    ],
+    "files": [
+      "backend/wallba/policy/repository.py",
+      "backend/wallba/policy/service.py",
+      "tests/policy/test_activation.py"
+    ],
+    "subagent": "p2-policy-engineer",
+    "acceptance": "Given dos activaciones con la misma versión esperada, When compiten, Then una gana y otra recibe 409; nunca queda una política parcial activa.",
+    "test": "pytest tests/policy/test_activation.py",
+    "estimate_reason": "1.1 repositorio/transacción + 0.5 concurrencia + 0.9 persistencia/reinicio + 0.5 revisión cruzada.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P2-006",
+    "owner": 2,
+    "module": "Policy and Security",
+    "story": "Como policy_admin necesito validar, guardar y activar políticas con autorización real.",
+    "title": "API de políticas y controles administrativos",
+    "steps": [
+      "Implementar lectura paginada y validación sin efectos secundarios.",
+      "Proteger creación/activación con dependencias RBAC y CSRF de P3.",
+      "Limitar tamaños, ocultar secretos y traducir fallos a Problem Details de WALLBA."
+    ],
+    "priority": "Alta",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P2-005"
+    ],
+    "files": [
+      "backend/wallba/policy/routes.py",
+      "tests/policy/test_api.py"
+    ],
+    "subagent": "p2-policy-engineer",
+    "acceptance": "Given bearer de agente o humano viewer, When intenta activar política, Then recibe 403 y no se modifica el snapshot.",
+    "test": "pytest tests/policy/test_api.py",
+    "estimate_reason": "0.8 rutas + 0.4 integración auth/auditoría + 0.6 API tests + 0.2 OpenAPI.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P2-007",
+    "owner": 2,
+    "module": "Policy and Security",
+    "story": "Como administrador necesito comprender y corregir políticas antes de publicarlas.",
+    "title": "Editor visual de políticas con borradores",
+    "steps": [
+      "Construir lista, detalle, editor textual YAML/JSON y panel de errores por ruta.",
+      "Mantener borrador separado de versión guardada y activa; activar sólo versión validada por servidor.",
+      "Consumir mocks contractuales durante desarrollo y manejar 401/403/409/422/503.",
+      "Añadir navegación por teclado, etiqueta de versión y confirmación con diff semántico."
+    ],
+    "priority": "Alta",
+    "effort": 3,
+    "dependencies": [
+      "WAL-P2-001"
+    ],
+    "files": [
+      "frontend/src/features/policies/PolicyListPage.tsx",
+      "frontend/src/features/policies/PolicyEditorPage.tsx",
+      "frontend/src/features/policies/policyApi.ts",
+      "frontend/src/features/policies/__tests__/editor.test.tsx"
+    ],
+    "subagent": "p2-policy-engineer",
+    "acceptance": "Given un borrador inválido, When falla validación servidor, Then se preserva el texto y activar permanece deshabilitado sin cambiar la política activa.",
+    "test": "npm --prefix frontend run test -- policies",
+    "estimate_reason": "1.4 UI y estados + 0.5 integración accesible + 0.8 pruebas de interacción + 0.3 revisión P4.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P2-008",
+    "owner": 2,
+    "module": "Policy and Security",
+    "story": "Como equipo necesito detectar bypass de autorización y documentar límites.",
+    "title": "Modelo de amenazas y revisión adversarial",
+    "steps": [
+      "Revisar identidad/contexto falsificados, reglas contradictorias y política ausente.",
+      "Preparar vectores de prompt injection con efecto real medible en recursos sintéticos.",
+      "Auditar la revalidación del proxy/aprobaciones en lectura y devolver hallazgos a P3."
+    ],
+    "priority": "Crítica",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P2-003",
+      "WAL-P2-004"
+    ],
+    "files": [
+      "tests/policy/test_adversarial.py",
+      "policies/examples/README.md"
+    ],
+    "subagent": "p2-security-auditor",
+    "acceptance": "Given texto malicioso que ordena borrar, When produce record.delete prohibido, Then el motor devuelve DENY independientemente del lenguaje del prompt.",
+    "test": "pytest tests/policy/test_adversarial.py",
+    "estimate_reason": "0.7 investigación/límites + 0.7 corpus adversarial + 0.4 revisión cruzada + 0.2 informe.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P2-009",
+    "owner": 2,
+    "module": "Policy and Security",
+    "story": "Como presentador necesito políticas comprensibles para los diez escenarios.",
+    "title": "Catálogo reproducible de políticas y escenarios",
+    "steps": [
+      "Preparar ejemplos equivalentes YAML/JSON y reglas allow/deny/approval sobre recursos ficticios.",
+      "Definir fixture inválido explícitamente separado de políticas activables.",
+      "Entregar a P1/P3/P4 IDs estables y expectativas, sin afirmar resultados ejecutados."
+    ],
+    "priority": "Alta",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P2-004",
+      "WAL-P2-005"
+    ],
+    "files": [
+      "policies/demo.yaml",
+      "policies/demo.json",
+      "policies/invalid/duplicate-key.yaml",
+      "tests/policy/test_demo_policy.py"
+    ],
+    "subagent": "p2-policy-engineer",
+    "acceptance": "Given los ejemplos demo YAML y JSON, When se evalúa la matriz contractual, Then ambos producen decisiones equivalentes.",
+    "test": "pytest tests/policy/test_demo_policy.py",
+    "estimate_reason": "0.6 ejemplos + 0.6 coordinación de escenarios + 0.6 verificación + 0.2 instrucciones.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P2-010",
+    "owner": 2,
+    "module": "Policy and Security",
+    "story": "Como equipo necesito integrar política, UI y proxy sin relajar permisos.",
+    "title": "Integración de seguridad y entrega de módulo",
+    "steps": [
+      "Conectar mock y adaptador real del evaluador con P3.",
+      "Verificar edición/validación/activación y bloqueo con versión retirada.",
+      "Revisar evidencia, actualizar contrato propuesto por PR y manual de operación."
+    ],
+    "priority": "Alta",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P2-006",
+      "WAL-P2-007",
+      "WAL-P2-008",
+      "WAL-P2-009"
+    ],
+    "files": [
+      "tests/policy/test_contract_integration.py",
+      "frontend/src/features/policies/__tests__/activation.test.tsx"
+    ],
+    "subagent": "wallba-verifier",
+    "acceptance": "Given una aprobación bajo versión antigua, When cambia política y se intenta ejecutar, Then P3 reevalúa y no usa la aprobación para el snapshot diferente.",
+    "test": "pytest tests/policy; npm --prefix frontend run test -- policies",
+    "estimate_reason": "0.6 integración + 0.6 regresión + 0.5 evidencia/revisión + 0.3 documentación.",
+    "state": "Pendiente"
+  }
+]

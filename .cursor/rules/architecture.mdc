@@ -1,0 +1,7 @@
+---
+description: "Arquitectura global de WALLBA"
+alwaysApply: true
+---
+
+Leer docs/ARCHITECTURE.md y docs/INTEGRATION_CONTRACTS.md. Mantener motor puro y ejecutor aislado. No iniciar implementación antes de aprobar el plan. No añadir servicios sin necesidad demostrada.
+

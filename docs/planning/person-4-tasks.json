@@ -1,0 +1,266 @@
+[
+  {
+    "id": "WAL-P4-001",
+    "owner": 4,
+    "module": "design-system",
+    "story": "Como operador quiero reconocer ubicación, identidad y acciones disponibles.",
+    "title": "Shell, tokens y navegación accesible",
+    "steps": [
+      "Definir tokens y componentes comunes",
+      "Construir shell y rutas reservadas P2/P3",
+      "Añadir navegación móvil y foco",
+      "Revisar 360/768/1440 px"
+    ],
+    "priority": "Crítica",
+    "effort": 3,
+    "dependencies": [],
+    "files": [
+      "frontend/src/app/",
+      "frontend/src/styles/",
+      "frontend/src/components/"
+    ],
+    "subagent": "p4-frontend-designer",
+    "acceptance": "Given una sesión válida, When se visita cada ruta a 360/768/1440 px, Then la ruta activa y todas las acciones esenciales conservan foco visible.",
+    "test": "Componentes, teclado, contraste medido y capturas responsive.",
+    "estimate_reason": "0.5 diseño/investigación + 1.5 implementación + 0.5 pruebas + 0.5 integración/documentación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P4-002",
+    "owner": 4,
+    "module": "api-client",
+    "story": "Como desarrollador quiero avanzar con APIs compatibles antes de disponer de los servicios.",
+    "title": "Cliente HTTP, caché y mocks contractuales",
+    "steps": [
+      "Implementar cliente tipado con cookies y CSRF",
+      "Definir query keys",
+      "Crear mocks señalizados",
+      "Impedir MSW en distribución",
+      "Limpiar caché al cambiar identidad"
+    ],
+    "priority": "Crítica",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P4-001"
+    ],
+    "files": [
+      "frontend/src/api/client.ts",
+      "frontend/src/api/queryKeys.ts",
+      "frontend/src/mocks/",
+      "frontend/src/app/providers.tsx"
+    ],
+    "subagent": "p4-observability-demo",
+    "acceptance": "Given datos simulados y expiración de sesión, When cambia la identidad, Then no quedan datos de la anterior y los mocks están identificados.",
+    "test": "Cliente, validación contractual de fixtures y cambio de sesión.",
+    "estimate_reason": "0.25 investigación + 0.75 implementación + 0.5 tests + 0.5 integración/documentación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P4-003",
+    "owner": 4,
+    "module": "audit-writer",
+    "story": "Como auditor quiero reconstruir decisiones con eventos ordenados sin secretos.",
+    "title": "Puerto, redacción y persistencia de auditoría",
+    "steps": [
+      "Acordar AuditSink",
+      "Implementar redacción allowlist",
+      "Persistir secuencia/hash en transacción",
+      "Definir fallo seguro previo a ejecución",
+      "Probar concurrencia y alteración"
+    ],
+    "priority": "Crítica",
+    "effort": 4,
+    "dependencies": [],
+    "files": [
+      "backend/wallba/observability/ports.py",
+      "backend/wallba/observability/writer.py",
+      "backend/wallba/observability/redaction.py",
+      "tests/observability/"
+    ],
+    "subagent": "p4-observability-demo",
+    "acceptance": "Given productores concurrentes, When insertan eventos, Then secuencias únicas, cadena verificable y secretos sintéticos ausentes de almacenamiento y exportación.",
+    "test": "Rollback, redacción recursiva, integración del helper canónico P1, carreras y cadena alterada.",
+    "estimate_reason": "0.75 diseño/investigación + 1.5 implementación + 1 pruebas adversariales + 0.75 integración/documentación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P4-004",
+    "owner": 4,
+    "module": "observability-api",
+    "story": "Como operador quiero consultar y descargar evidencia con límites y permisos.",
+    "title": "API de auditoría, métricas y exportación",
+    "steps": [
+      "Añadir filtros y cursor",
+      "Agregar métricas por ventana",
+      "Aplicar RBAC",
+      "Exportar manifiesto/checksum",
+      "Medir 10000 eventos sintéticos"
+    ],
+    "priority": "Alta",
+    "effort": 3,
+    "dependencies": [
+      "WAL-P4-003"
+    ],
+    "files": [
+      "backend/wallba/observability/queries.py",
+      "backend/wallba/observability/exports.py",
+      "backend/wallba/observability/router.py",
+      "backend/wallba/observability/schemas.py",
+      "tests/observability/"
+    ],
+    "subagent": "p4-observability-demo",
+    "acceptance": "Given ventana fija, When se consultan tabla y dashboard, Then los totales coinciden y la paginación no repite ni omite eventos del snapshot.",
+    "test": "API autenticada, errores, filtros, límites, cursores y benchmark documentado.",
+    "estimate_reason": "0.25 diseño + 1.25 construcción + 0.75 tests + 0.75 integración/documentación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P4-005",
+    "owner": 4,
+    "module": "dashboard-agents",
+    "story": "Como operador quiero conocer actividad y capacidades declaradas de los agentes.",
+    "title": "Dashboard y listado/detalle de agentes",
+    "steps": [
+      "Separar KPIs de decisión y ejecución",
+      "Mostrar riesgo con alternativa textual",
+      "Listar y detallar agentes",
+      "Mostrar fecha de corte y vacíos",
+      "Probar contadores"
+    ],
+    "priority": "Alta",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P4-001",
+      "WAL-P4-002"
+    ],
+    "files": [
+      "frontend/src/features/dashboard/",
+      "frontend/src/features/agents/"
+    ],
+    "subagent": "p4-frontend-designer",
+    "acceptance": "Given cero eventos y dos agentes, When se abre dashboard, Then muestra ceros reales, vacío y agentes sin inferir permisos adicionales.",
+    "test": "Componentes, contadores, vacío, error y detalle enlazable.",
+    "estimate_reason": "0.25 diseño + 0.75 construcción + 0.5 tests + 0.5 integración/documentación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P4-006",
+    "owner": 4,
+    "module": "audit-ui",
+    "story": "Como auditor quiero localizar una llamada y seguirla hasta su efecto.",
+    "title": "Explorador y timeline de auditoría",
+    "steps": [
+      "Sincronizar filtros seguros con URL",
+      "Construir tabla y timeline",
+      "Mostrar integridad y límites",
+      "Descargar evidencia",
+      "Probar navegación y cursor inválido"
+    ],
+    "priority": "Alta",
+    "effort": 2,
+    "dependencies": [
+      "WAL-P4-002",
+      "WAL-P4-004"
+    ],
+    "files": [
+      "frontend/src/features/audit/"
+    ],
+    "subagent": "p4-observability-demo",
+    "acceptance": "Given request_id, When se filtra y abre detalle, Then solo aparecen eventos correlacionados y exportación conserva los IDs.",
+    "test": "UI/API, filtros, enlace directo, errores y exportación.",
+    "estimate_reason": "0.25 diseño + 0.75 construcción + 0.5 tests + 0.5 integración/documentación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P4-007",
+    "owner": 4,
+    "module": "playground-ui",
+    "story": "Como evaluador quiero observar el mismo intento con y sin firewall en recursos equivalentes.",
+    "title": "Playground comparativo con evidencia real",
+    "steps": [
+      "Seleccionar catálogo y semilla",
+      "Confirmar recursos sintéticos",
+      "Iniciar run con doble click bloqueado y gestionar 409 por run activo",
+      "Recuperar estado tras reload",
+      "Mostrar ramas y efectos",
+      "Enlazar auditoría/aprobaciones",
+      "Evitar retries ambiguos"
+    ],
+    "priority": "Crítica",
+    "effort": 4,
+    "dependencies": [
+      "WAL-P4-002",
+      "WAL-P4-006"
+    ],
+    "files": [
+      "frontend/src/features/playground/"
+    ],
+    "subagent": "p4-observability-demo",
+    "acceptance": "Given eliminación prohibida, When finaliza comparación, Then muestra efectos y decisión de cada rama únicamente según evidencia persistida de la ejecución.",
+    "test": "Doble click, recarga, timeout, ramas parciales, aprobación y UNKNOWN con recursos sintéticos.",
+    "estimate_reason": "0.5 modelado + 1.5 construcción + 1 tests + 1 integración/documentación.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P4-008",
+    "owner": 4,
+    "module": "attack-matrix-ui",
+    "story": "Como evaluador quiero distinguir escenarios probados de pendientes.",
+    "title": "Matriz de ataques enlazada a runs",
+    "steps": [
+      "Mostrar resultados, parámetros y motivos",
+      "Enlazar evidencia y versión",
+      "Conservar No ejecutado",
+      "Permitir inspeccionar historia"
+    ],
+    "priority": "Alta",
+    "effort": 1,
+    "dependencies": [
+      "WAL-P4-007"
+    ],
+    "files": [
+      "frontend/src/features/attack-matrix/"
+    ],
+    "subagent": "p4-observability-demo",
+    "acceptance": "Given diez escenarios y tres runs, When se abre matriz, Then siete filas siguen No ejecutado y no se presentan como pruebas superadas.",
+    "test": "Fixture parcial validado y recorrido real de matriz.",
+    "estimate_reason": "0.5 construcción + 0.25 tests + 0.25 documentación/integración.",
+    "state": "Pendiente"
+  },
+  {
+    "id": "WAL-P4-009",
+    "owner": 4,
+    "module": "e2e-accessibility",
+    "story": "Como equipo quiero una demostración verificable y accesible.",
+    "title": "Integración, accesibilidad y entrega end-to-end",
+    "steps": [
+      "Integrar rutas de P2/P3",
+      "Automatizar recorridos de sesión y firewall",
+      "Ejecutar escenarios con propietarios",
+      "Revisar axe/teclado/zoom",
+      "Verificar caché y UNKNOWN",
+      "Registrar evidencia real"
+    ],
+    "priority": "Crítica",
+    "effort": 4,
+    "dependencies": [
+      "WAL-P4-005",
+      "WAL-P4-006",
+      "WAL-P4-007",
+      "WAL-P4-008"
+    ],
+    "files": [
+      "tests/e2e/",
+      "frontend/src/app/",
+      "frontend/src/features/dashboard/",
+      "frontend/src/features/audit/",
+      "frontend/src/features/playground/",
+      "frontend/src/features/attack-matrix/"
+    ],
+    "subagent": "wallba-verifier",
+    "acceptance": "Given entorno limpio con semillas documentadas, When se ejecuta recorrido, Then los resultados enlazan evidencia, no quedan violaciones críticas de accesibilidad conocidas y los errores tienen estado comprensible.",
+    "test": "Playwright, axe y revisión manual de teclado/zoom/lector; tests de módulo permanecen con cada propietario.",
+    "estimate_reason": "0.5 planificación + 1 automatización + 1 integración + 1 validación visual/accesibilidad + 0.5 documentación.",
+    "state": "Pendiente"
+  }
+]

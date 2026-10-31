@@ -1,0 +1,8 @@
+---
+description: "Diseño y experiencia accesible"
+globs: "frontend/src/**"
+alwaysApply: false
+---
+
+Aplicar docs/PRODUCT_DESIGN.md. Es propuesta visual sin referencias recibidas. Estados loading/empty/error/stale/UNKNOWN; mocks rotulados. Accesibilidad y responsive medidos. Matriz solo con evidencia real; no inferir resultados del color.
+

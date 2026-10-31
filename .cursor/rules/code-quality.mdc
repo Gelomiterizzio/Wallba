@@ -1,0 +1,8 @@
+---
+description: "Calidad y mantenibilidad"
+globs: "backend/**/*.py, frontend/src/**"
+alwaysApply: false
+---
+
+Tipos explícitos en fronteras; funciones pequeñas con responsabilidad única. No capturar todas las excepciones y devolver éxito. Rutas UI sin lógica crítica. Añadir dependencia solo con propósito, lock y revisión del propietario.
+

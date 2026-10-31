@@ -1,0 +1,8 @@
+---
+description: "Permisos y límites de confianza"
+globs: "backend/**/*.py, policies/**"
+alwaysApply: false
+---
+
+Aplicar docs/SECURITY_MODEL.md. Default DENY; ninguna excepción por prompt. Validación cerrada; no eval/SQL/path arbitrarios. Capacidad exacta, nonce y expiry. Auditoría previa obligatoria, UNKNOWN tras efecto ambiguo.
+

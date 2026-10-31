@@ -1,0 +1,7 @@
+---
+description: "Delegación con subagentes especializados"
+alwaysApply: false
+---
+
+Aplicar docs/CURSOR_WORKFLOW.md. Entregar ID, contexto, paths, contratos, criterios y pruebas al subagente. Evitar ediciones simultáneas del mismo path. Revisor readonly inspecciona; principal ejecuta pruebas con escritura. Humano revisa resultados.
+
