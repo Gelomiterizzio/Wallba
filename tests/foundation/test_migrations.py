@@ -6,10 +6,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
+from alembic.script import ScriptDirectory
 from sqlalchemy import inspect, text
 from sqlalchemy.exc import IntegrityError
 
-from wallba.foundation.database import create_sqlite_engine, run_migrations, write_transaction
+from wallba.foundation.database import alembic_config, create_sqlite_engine, run_migrations, write_transaction
 
 
 def _insert_demo_run(connection, run_id: str, status: str = "RUNNING") -> None:
@@ -29,6 +30,12 @@ def engine(tmp_path: Path):
     value = create_sqlite_engine(db_path)
     yield value
     value.dispose()
+
+
+def test_migrations_form_a_single_line(tmp_path: Path) -> None:
+    # Dos dominios colgando del mismo padre impiden arrancar la API ("Multiple head revisions").
+    script = ScriptDirectory.from_config(alembic_config(tmp_path / "control.sqlite"))
+    assert len(script.get_heads()) == 1
 
 
 def test_empty_database_gets_all_tables(engine) -> None:

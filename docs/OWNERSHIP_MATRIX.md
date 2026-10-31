@@ -22,7 +22,7 @@ Cuatro responsables humanos. La propiedad es principal y exige revisión; no imp
 | .github/workflows/, PR template, bug template | P1 | Los cuatro revisan checks propios |
 | frontend/package.json, package-lock.json, vite/ts/eslint/playwright config, scripts/, public-dev/, e2e/ | P4 | P1 compatibilidad entorno; P2/P3 dependencias nuevas |
 | frontend/src/features/policies-route/, approvals-route/, login/ (enrutado sin lógica de P2/P3) | P4 | P2/P3 consumidores |
-| backend/alembic/versions/0002_policy_tables.py (usa schema.sql de P2) | P1 | P2 |
+| backend/alembic/versions/0003_policy_tables.py (usa schema.sql de P2) | P1 | P2 |
 | tests/contracts/test_frontend_fixtures.py | P4 | P1 contrato |
 | docs/team/PERSON_N_MASTER_PLAN.md, docs/planning/person-N-tasks.json | PN | Dueños de dependencias |
 | docs/API_CONTRACTS.md, INTEGRATION_CONTRACTS.md | P1 | Todos ante cambio |

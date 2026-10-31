@@ -1,14 +1,14 @@
 """Auditoría de P4: eventos encadenados y append-only a nivel de base.
 
-Revision ID: 0003_audit
-Revises: 0002_policy
+Revision ID: 0004_audit
+Revises: 0003_policy
 """
 
 from alembic import op
 import sqlalchemy as sa
 
-revision = "0003_audit"
-down_revision = "0002_policy"
+revision = "0004_audit"
+down_revision = "0003_policy"
 branch_labels = None
 depends_on = None
 

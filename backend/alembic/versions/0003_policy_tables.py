@@ -1,15 +1,15 @@
 """Tablas de políticas de P2, con el esquema de backend/wallba/policy/schema.sql.
 
-Revision ID: 0002_policy
-Revises: 0001_foundation
+Revision ID: 0003_policy
+Revises: 0002_person3
 """
 
 from alembic import op
 
 from wallba.policy.repository import SCHEMA_SQL
 
-revision = "0002_policy"
-down_revision = "0001_foundation"
+revision = "0003_policy"
+down_revision = "0002_person3"
 branch_labels = None
 depends_on = None
 
